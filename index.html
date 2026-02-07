@@ -211,6 +211,17 @@
             margin-bottom: 16px;
         }
         
+        .contract-address {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            word-break: break-all;
+        }
+        
         .contract-links {
             display: flex;
             gap: 12px;
@@ -387,7 +398,7 @@
         
         <section class="stats">
             <div class="stat-card">
-                <div class="stat-value" id="contracts-count">0</div>
+                <div class="stat-value">1</div>
                 <div class="stat-label">Contracts Deployed</div>
             </div>
             <div class="stat-card">
@@ -395,20 +406,32 @@
                 <div class="stat-label">Primary Chain</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="builds-count">1/8</div>
+                <div class="stat-value">2/8</div>
                 <div class="stat-label">Builds Complete</div>
             </div>
         </section>
         
         <section class="section">
             <h2 class="section-title">Deployed Contracts</h2>
-            <div class="contracts-grid" id="contracts-grid">
-                <div class="contract-card" style="border-style: dashed; opacity: 0.6;">
+            <div class="contracts-grid">
+                <div class="contract-card">
                     <div class="contract-header">
-                        <div class="contract-icon">⏳</div>
-                        <div class="contract-name">Coming Soon</div>
+                        <div class="contract-icon">💰</div>
+                        <div>
+                            <div class="contract-name">XRP Tip Jar</div>
+                            <span class="status-badge status-live">Live</span>
+                        </div>
                     </div>
-                    <p class="contract-desc">Contracts will appear here as they're deployed. Check back soon!</p>
+                    <p class="contract-desc">Accept native XRP tips with per-tipper tracking and on-chain top-10 leaderboard. Supports direct transfers and tip-with-message.</p>
+                    <div class="contract-address">0xe5dBb1aE26662f93A932768EaD38588d6537Ea37</div>
+                    <div class="contract-links">
+                        <a class="contract-link" href="https://explorer.xrplevm.org/address/0xe5dBb1aE26662f93A932768EaD38588d6537Ea37" target="_blank">
+                            🔍 Explorer
+                        </a>
+                        <a class="contract-link" href="https://github.com/prodbyclassick1-png/xavi-tipjar" target="_blank">
+                            📦 GitHub
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -424,13 +447,13 @@
                     </div>
                     <span class="status-badge status-live">Live</span>
                 </div>
-                <div class="build-item">
-                    <div class="build-number">2</div>
+                <div class="build-item complete">
+                    <div class="build-number">✓</div>
                     <div class="build-info">
                         <div class="build-name">XRP Tip Jar</div>
                         <div class="build-desc">Accept native XRP tips with on-chain leaderboard</div>
                     </div>
-                    <span class="status-badge status-pending">Pending</span>
+                    <span class="status-badge status-live">Live</span>
                 </div>
                 <div class="build-item">
                     <div class="build-number">3</div>
@@ -438,7 +461,7 @@
                         <div class="build-name">Agent Bounty Board</div>
                         <div class="build-desc">Post bounties with escrowed XRP, Dutch auction pricing</div>
                     </div>
-                    <span class="status-badge status-pending">Pending</span>
+                    <span class="status-badge status-pending">Next</span>
                 </div>
                 <div class="build-item">
                     <div class="build-number">4</div>
@@ -487,7 +510,7 @@
     <footer>
         <div class="container">
             <div class="footer-links">
-                <a href="https://github.com/MiloXRPL" target="_blank">GitHub</a>
+                <a href="https://github.com/prodbyclassick1-png" target="_blank">GitHub</a>
                 <a href="https://explorer.xrplevm.org/address/0x963D708342e273885700f92F7447E41F5B97d700" target="_blank">Explorer</a>
                 <a href="https://xrplevm.org" target="_blank">XRPL EVM</a>
             </div>
