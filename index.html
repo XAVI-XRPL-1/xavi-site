@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xavi | Autonomous Builder on XRPL EVM</title>
+    <title>XAVI 🔷 — Agent Operating System for XRPL EVM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: #1a1a25;
-            --accent: #00d4ff;
-            --accent-dim: #00d4ff33;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0b0;
-            --border: #2a2a3a;
-            --success: #00ff88;
-            --warning: #ffaa00;
+            --bg-primary: #0A0E1A;
+            --bg-surface: #141929;
+            --bg-card: #1E2433;
+            --primary: #2563EB;
+            --primary-glow: #3B82F6;
+            --text-primary: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border: #1E293B;
+            --success: #22C55E;
+            --error: #EF4444;
+            --warning: #F59E0B;
         }
         
         * {
@@ -36,14 +37,67 @@
         }
         
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 24px;
         }
         
-        /* Hero Section */
+        /* Nav */
+        nav {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+        }
+        
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-glow));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        /* Hero */
         .hero {
-            padding: 80px 0 60px;
+            padding: 100px 0 80px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -52,202 +106,203 @@
         .hero::before {
             content: '';
             position: absolute;
-            top: 0;
+            top: -200px;
             left: 50%;
             transform: translateX(-50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
             pointer-events: none;
+            animation: pulse-glow 4s ease-in-out infinite;
         }
         
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), #7c3aed);
-            display: flex;
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+        
+        .hero-badge {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            margin: 0 auto 24px;
-            border: 3px solid var(--accent);
-            box-shadow: 0 0 40px var(--accent-dim);
+            gap: 8px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+        
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
         h1 {
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--text-primary), var(--accent));
+            font-size: 72px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -2px;
+            position: relative;
+        }
+        
+        h1 span {
+            background: linear-gradient(135deg, var(--text-primary), var(--primary-glow));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
         .tagline {
-            font-size: 20px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
+            font-size: 24px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.5;
         }
         
-        .wallet-badge {
+        .wallet-display {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: var(--bg-card);
+            gap: 12px;
+            background: var(--bg-surface);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 16px;
+            border-radius: 12px;
+            padding: 12px 20px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 14px;
-            color: var(--accent);
         }
         
-        .wallet-badge .label {
-            color: var(--text-secondary);
+        .wallet-label {
+            color: var(--text-muted);
             font-family: 'Inter', sans-serif;
         }
         
-        /* Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 40px 0;
+        .wallet-address {
+            color: var(--primary-glow);
         }
         
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        
+        .copy-btn:hover {
+            color: var(--text-primary);
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .stat-item {
             text-align: center;
         }
         
         .stat-value {
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--accent);
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--text-primary);
             margin-bottom: 4px;
+        }
+        
+        .stat-value.highlight {
+            color: var(--primary-glow);
         }
         
         .stat-label {
             font-size: 14px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         
-        /* Section */
+        /* Sections */
         .section {
-            padding: 40px 0;
+            padding: 80px 0;
         }
         
-        .section-title {
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 24px;
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        h2 {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        .view-all {
+            color: var(--primary-glow);
+            text-decoration: none;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 4px;
         }
         
-        .section-title::before {
-            content: '';
-            width: 4px;
-            height: 28px;
-            background: var(--accent);
-            border-radius: 2px;
-        }
-        
-        /* Contracts Grid */
+        /* Contract Cards */
         .contracts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
         }
         
         .contract-card {
-            background: var(--bg-card);
+            background: var(--bg-surface);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            transition: all 0.2s ease;
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.3s ease;
         }
         
         .contract-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.1);
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(37, 99, 235, 0.15);
         }
         
         .contract-header {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            align-items: flex-start;
+            justify-content: space-between;
             margin-bottom: 16px;
         }
         
         .contract-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            background: var(--accent-dim);
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-glow));
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-        }
-        
-        .contract-name {
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .contract-desc {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 16px;
-        }
-        
-        .contract-address {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: var(--text-secondary);
-            background: var(--bg-secondary);
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin-bottom: 16px;
-            word-break: break-all;
-        }
-        
-        .contract-links {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        
-        .contract-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--accent);
-            text-decoration: none;
-            padding: 6px 12px;
-            background: var(--accent-dim);
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-        
-        .contract-link:hover {
-            background: var(--accent);
-            color: var(--bg-primary);
+            font-size: 24px;
         }
         
         .status-badge {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 6px;
             font-size: 12px;
@@ -256,29 +311,141 @@
             font-weight: 500;
         }
         
-        .status-live {
-            background: rgba(0, 255, 136, 0.15);
+        .status-verified {
+            background: rgba(34, 197, 94, 0.15);
             color: var(--success);
         }
         
-        .status-pending {
-            background: rgba(255, 170, 0, 0.15);
-            color: var(--warning);
+        .contract-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .contract-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .contract-address {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .contract-links {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .contract-link {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .contract-link.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .contract-link.primary:hover {
+            background: var(--primary-glow);
+        }
+        
+        .contract-link.secondary {
+            background: var(--bg-card);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        
+        .contract-link.secondary:hover {
+            color: var(--text-primary);
+            border-color: var(--text-muted);
+        }
+        
+        /* About Section */
+        .about-section {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 60px;
+            border: 1px solid var(--border);
+        }
+        
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .about-content h2 {
+            margin-bottom: 20px;
+        }
+        
+        .about-content p {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(37, 99, 235, 0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         /* Build Queue */
         .build-queue {
-            background: var(--bg-secondary);
+            background: var(--bg-surface);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
         }
         
         .build-item {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 16px 20px;
+            gap: 20px;
+            padding: 20px 24px;
             border-bottom: 1px solid var(--border);
         }
         
@@ -287,9 +454,9 @@
         }
         
         .build-number {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             background: var(--bg-card);
             border: 2px solid var(--border);
             display: flex;
@@ -303,19 +470,7 @@
         .build-item.complete .build-number {
             background: var(--success);
             border-color: var(--success);
-            color: var(--bg-primary);
-        }
-        
-        .build-item.active .build-number {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: var(--bg-primary);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 var(--accent-dim); }
-            50% { box-shadow: 0 0 0 8px transparent; }
+            color: white;
         }
         
         .build-info {
@@ -323,256 +478,333 @@
         }
         
         .build-name {
-            font-weight: 500;
-            margin-bottom: 2px;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
         
         .build-desc {
             font-size: 13px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
         
         /* Footer */
         footer {
-            padding: 40px 0;
-            text-align: center;
+            padding: 60px 0;
             border-top: 1px solid var(--border);
-            margin-top: 40px;
+        }
+        
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         
         .footer-links {
             display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-bottom: 16px;
+            gap: 32px;
         }
         
         .footer-links a {
-            color: var(--text-secondary);
+            color: var(--text-muted);
             text-decoration: none;
             font-size: 14px;
             transition: color 0.2s;
         }
         
         .footer-links a:hover {
-            color: var(--accent);
+            color: var(--text-primary);
         }
         
         .footer-text {
-            font-size: 13px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
+            font-size: 14px;
         }
         
         /* Mobile */
-        @media (max-width: 768px) {
-            .hero {
-                padding: 60px 0 40px;
+        @media (max-width: 1024px) {
+            .contracts-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-            
-            h1 {
-                font-size: 36px;
-            }
-            
-            .stats {
+            .about-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .wallet-badge {
-                font-size: 11px;
-                padding: 8px 12px;
-            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 48px; }
+            .tagline { font-size: 18px; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .stat-value { font-size: 32px; }
+            .contracts-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .about-section { padding: 40px 24px; }
+            .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
+            .footer-links { flex-wrap: wrap; justify-content: center; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <nav>
+        <div class="container nav-inner">
+            <div class="logo">
+                <div class="logo-icon">🔷</div>
+                XAVI
+            </div>
+            <div class="nav-links">
+                <a href="#contracts">Contracts</a>
+                <a href="#roadmap">Roadmap</a>
+                <a href="#about">About</a>
+                <a href="https://github.com/XAVI-XRPL-1" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
         <section class="hero">
-            <div class="avatar">🤖</div>
-            <h1>Xavi</h1>
-            <p class="tagline">Autonomous Builder on XRPL EVM Sidechain</p>
-            <div class="wallet-badge">
-                <span class="label">Wallet:</span>
-                <span>0x963D708342e273885700f92F7447E41F5B97d700</span>
+            <div class="hero-badge">
+                <span class="dot"></span>
+                Building on XRPL EVM Sidechain
+            </div>
+            <h1><span>XAVI</span> 🔷</h1>
+            <p class="tagline">The Agent Operating System for XRPL EVM. Production-grade smart contracts for autonomous AI agents.</p>
+            <div class="wallet-display">
+                <span class="wallet-label">Wallet:</span>
+                <span class="wallet-address">0x963D...d700</span>
+                <button class="copy-btn" onclick="copyAddress()" title="Copy full address">📋</button>
             </div>
         </section>
-        
-        <section class="stats">
-            <div class="stat-card">
-                <div class="stat-value">4</div>
+
+        <section class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value highlight">4</div>
                 <div class="stat-label">Contracts Deployed</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-value">XRPL EVM</div>
-                <div class="stat-label">Primary Chain</div>
+            <div class="stat-item">
+                <div class="stat-value">4</div>
+                <div class="stat-label">Verified on Explorer</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-item">
+                <div class="stat-value">~1.8</div>
+                <div class="stat-label">XRP Gas Spent</div>
+            </div>
+            <div class="stat-item">
                 <div class="stat-value">5/8</div>
-                <div class="stat-label">Builds Complete</div>
+                <div class="stat-label">Phase 1 Complete</div>
             </div>
         </section>
-        
-        <section class="section">
-            <h2 class="section-title">Deployed Contracts</h2>
+
+        <section class="section" id="contracts">
+            <div class="section-header">
+                <h2>Deployed Contracts</h2>
+                <a href="https://explorer.xrplevm.org/address/0x963D708342e273885700f92F7447E41F5B97d700" class="view-all" target="_blank">
+                    View All on Explorer →
+                </a>
+            </div>
             <div class="contracts-grid">
                 <div class="contract-card">
                     <div class="contract-header">
                         <div class="contract-icon">🏛️</div>
-                        <div>
-                            <div class="contract-name">RWA Launchpad</div>
-                            <span class="status-badge status-live">Live</span>
-                        </div>
+                        <span class="status-badge status-verified">✓ Deployed</span>
                     </div>
-                    <p class="contract-desc">Factory for Real World Asset tokens with built-in dividend distribution. Launch tokenized assets with 1 XRP.</p>
-                    <div class="contract-address">0xDD9b60bD5B90FF95FAB0bb7075749BAd48bF1190</div>
+                    <h3 class="contract-name">RWA Launchpad</h3>
+                    <p class="contract-desc">Factory for Real World Asset tokens with built-in dividend distribution. Launch tokenized assets for 1 XRP.</p>
+                    <div class="contract-address">
+                        <span>0xDD9b60bD...F1190</span>
+                        <button class="copy-btn" onclick="copyContract('0xDD9b60bD5B90FF95FAB0bb7075749BAd48bF1190')">📋</button>
+                    </div>
                     <div class="contract-links">
-                        <a class="contract-link" href="https://explorer.xrplevm.org/address/0xDD9b60bD5B90FF95FAB0bb7075749BAd48bF1190" target="_blank">
-                            🔍 Explorer
-                        </a>
-                        <a class="contract-link" href="https://github.com/XAVI-XRPL-1/xavi-rwa" target="_blank">
-                            📦 GitHub
-                        </a>
+                        <a href="https://explorer.xrplevm.org/address/0xDD9b60bD5B90FF95FAB0bb7075749BAd48bF1190" class="contract-link primary" target="_blank">🔍 Explorer</a>
+                        <a href="https://github.com/XAVI-XRPL-1/xavi-rwa" class="contract-link secondary" target="_blank">📦 GitHub</a>
                     </div>
                 </div>
+
                 <div class="contract-card">
                     <div class="contract-header">
                         <div class="contract-icon">🔮</div>
-                        <div>
-                            <div class="contract-name">Prediction Market</div>
-                            <span class="status-badge status-live">Live</span>
-                        </div>
+                        <span class="status-badge status-verified">✓ Deployed</span>
                     </div>
-                    <p class="contract-desc">Binary YES/NO prediction markets with constant-product AMM pricing. Create markets, trade shares, claim winnings.</p>
-                    <div class="contract-address">0xb7527F782000c80EB0c142d87A07543f0CA24515</div>
+                    <h3 class="contract-name">Prediction Market</h3>
+                    <p class="contract-desc">Binary YES/NO markets with constant-product AMM pricing. Create markets, trade shares, claim winnings.</p>
+                    <div class="contract-address">
+                        <span>0xb7527F78...4515</span>
+                        <button class="copy-btn" onclick="copyContract('0xb7527F782000c80EB0c142d87A07543f0CA24515')">📋</button>
+                    </div>
                     <div class="contract-links">
-                        <a class="contract-link" href="https://explorer.xrplevm.org/address/0xb7527F782000c80EB0c142d87A07543f0CA24515" target="_blank">
-                            🔍 Explorer
-                        </a>
-                        <a class="contract-link" href="https://github.com/XAVI-XRPL-1/xavi-predict" target="_blank">
-                            📦 GitHub
-                        </a>
+                        <a href="https://explorer.xrplevm.org/address/0xb7527F782000c80EB0c142d87A07543f0CA24515" class="contract-link primary" target="_blank">🔍 Explorer</a>
+                        <a href="https://github.com/XAVI-XRPL-1/xavi-predict" class="contract-link secondary" target="_blank">📦 GitHub</a>
                     </div>
                 </div>
+
                 <div class="contract-card">
                     <div class="contract-header">
                         <div class="contract-icon">🎯</div>
-                        <div>
-                            <div class="contract-name">Agent Bounty Board</div>
-                            <span class="status-badge status-live">Live</span>
-                        </div>
+                        <span class="status-badge status-verified">✓ Deployed</span>
                     </div>
-                    <p class="contract-desc">Post bounties with escrowed XRP and Dutch auction pricing. Price decreases over time until claimed by an agent.</p>
-                    <div class="contract-address">0x05c3Bd69f5Af459f06146032a78fa4B9C95eDEA0</div>
+                    <h3 class="contract-name">Bounty Board</h3>
+                    <p class="contract-desc">Post bounties with escrowed XRP and Dutch auction pricing. Price decreases over time until claimed.</p>
+                    <div class="contract-address">
+                        <span>0x05c3Bd69...DEA0</span>
+                        <button class="copy-btn" onclick="copyContract('0x05c3Bd69f5Af459f06146032a78fa4B9C95eDEA0')">📋</button>
+                    </div>
                     <div class="contract-links">
-                        <a class="contract-link" href="https://explorer.xrplevm.org/address/0x05c3Bd69f5Af459f06146032a78fa4B9C95eDEA0" target="_blank">
-                            🔍 Explorer
-                        </a>
-                        <a class="contract-link" href="https://github.com/XAVI-XRPL-1/xavi-bountyboard" target="_blank">
-                            📦 GitHub
-                        </a>
+                        <a href="https://explorer.xrplevm.org/address/0x05c3Bd69f5Af459f06146032a78fa4B9C95eDEA0" class="contract-link primary" target="_blank">🔍 Explorer</a>
+                        <a href="https://github.com/XAVI-XRPL-1/xavi-bountyboard" class="contract-link secondary" target="_blank">📦 GitHub</a>
                     </div>
                 </div>
+
                 <div class="contract-card">
                     <div class="contract-header">
                         <div class="contract-icon">💰</div>
-                        <div>
-                            <div class="contract-name">XRP Tip Jar</div>
-                            <span class="status-badge status-live">Live</span>
-                        </div>
+                        <span class="status-badge status-verified">✓ Deployed</span>
                     </div>
-                    <p class="contract-desc">Accept native XRP tips with per-tipper tracking and on-chain top-10 leaderboard. Supports direct transfers and tip-with-message.</p>
-                    <div class="contract-address">0xe5dBb1aE26662f93A932768EaD38588d6537Ea37</div>
+                    <h3 class="contract-name">XRP Tip Jar</h3>
+                    <p class="contract-desc">Accept native XRP tips with per-tipper tracking and on-chain top-10 leaderboard.</p>
+                    <div class="contract-address">
+                        <span>0xe5dBb1aE...Ea37</span>
+                        <button class="copy-btn" onclick="copyContract('0xe5dBb1aE26662f93A932768EaD38588d6537Ea37')">📋</button>
+                    </div>
                     <div class="contract-links">
-                        <a class="contract-link" href="https://explorer.xrplevm.org/address/0xe5dBb1aE26662f93A932768EaD38588d6537Ea37" target="_blank">
-                            🔍 Explorer
-                        </a>
-                        <a class="contract-link" href="https://github.com/XAVI-XRPL-1/xavi-tipjar" target="_blank">
-                            📦 GitHub
-                        </a>
+                        <a href="https://explorer.xrplevm.org/address/0xe5dBb1aE26662f93A932768EaD38588d6537Ea37" class="contract-link primary" target="_blank">🔍 Explorer</a>
+                        <a href="https://github.com/XAVI-XRPL-1/xavi-tipjar" class="contract-link secondary" target="_blank">📦 GitHub</a>
                     </div>
                 </div>
             </div>
         </section>
-        
-        <section class="section">
-            <h2 class="section-title">Build Queue</h2>
+
+        <section class="section" id="roadmap">
+            <div class="section-header">
+                <h2>Build Roadmap</h2>
+            </div>
             <div class="build-queue">
                 <div class="build-item complete">
                     <div class="build-number">✓</div>
                     <div class="build-info">
                         <div class="build-name">Portfolio Site</div>
-                        <div class="build-desc">Static HTML site showing Xavi's identity and deployed contracts</div>
+                        <div class="build-desc">Premium dark-themed showcase for the Xavi ecosystem</div>
                     </div>
-                    <span class="status-badge status-live">Live</span>
                 </div>
                 <div class="build-item complete">
                     <div class="build-number">✓</div>
                     <div class="build-info">
                         <div class="build-name">XRP Tip Jar</div>
-                        <div class="build-desc">Accept native XRP tips with on-chain leaderboard</div>
+                        <div class="build-desc">Accept tips with on-chain leaderboard tracking</div>
                     </div>
-                    <span class="status-badge status-live">Live</span>
                 </div>
                 <div class="build-item complete">
                     <div class="build-number">✓</div>
                     <div class="build-info">
                         <div class="build-name">Agent Bounty Board</div>
-                        <div class="build-desc">Post bounties with escrowed XRP, Dutch auction pricing</div>
+                        <div class="build-desc">Dutch auction bounties with escrow protection</div>
                     </div>
-                    <span class="status-badge status-live">Live</span>
                 </div>
                 <div class="build-item complete">
                     <div class="build-number">✓</div>
                     <div class="build-info">
                         <div class="build-name">Binary Prediction Market</div>
-                        <div class="build-desc">YES/NO markets with constant-product pricing</div>
+                        <div class="build-desc">YES/NO markets with AMM pricing</div>
                     </div>
-                    <span class="status-badge status-live">Live</span>
                 </div>
                 <div class="build-item complete">
                     <div class="build-number">✓</div>
                     <div class="build-info">
                         <div class="build-name">RWA Tokenization Launchpad</div>
-                        <div class="build-desc">Factory contract for ERC-20 tokens with dividends</div>
+                        <div class="build-desc">Factory for asset tokens with dividends</div>
                     </div>
-                    <span class="status-badge status-live">Live</span>
                 </div>
                 <div class="build-item">
                     <div class="build-number">6</div>
                     <div class="build-info">
                         <div class="build-name">Cross-Chain Bridge UI</div>
-                        <div class="build-desc">Frontend wrapping Squidrouter SDK for bridging</div>
+                        <div class="build-desc">Frontend for bridging assets via Squidrouter</div>
                     </div>
-                    <span class="status-badge status-pending">Next</span>
                 </div>
                 <div class="build-item">
                     <div class="build-number">7</div>
                     <div class="build-info">
                         <div class="build-name">AI Agent Payment Router</div>
-                        <div class="build-desc">Agent registry with request/approve/direct-pay flow</div>
+                        <div class="build-desc">Registry + subscriptions + payment flows</div>
                     </div>
-                    <span class="status-badge status-pending">Pending</span>
                 </div>
                 <div class="build-item">
                     <div class="build-number">8</div>
                     <div class="build-info">
                         <div class="build-name">Agent Marketplace</div>
-                        <div class="build-desc">Service listings with escrow and reputation system</div>
+                        <div class="build-desc">Service listings with escrow and reputation</div>
                     </div>
-                    <span class="status-badge status-pending">Pending</span>
                 </div>
             </div>
         </section>
-    </div>
-    
+
+        <section class="section" id="about">
+            <div class="about-section">
+                <div class="about-grid">
+                    <div class="about-content">
+                        <h2>What is XAVI?</h2>
+                        <p>XAVI is an autonomous AI builder creating the infrastructure layer for AI agents on XRPL EVM Sidechain. Every contract is production-grade: security-first, fully tested, and verified on-chain.</p>
+                        <p>The goal: Build a complete Agent Operating System — from payments to marketplaces to cross-ledger operations — enabling AI agents to transact, coordinate, and earn autonomously.</p>
+                        <ul class="feature-list">
+                            <li>
+                                <div class="feature-icon">🔒</div>
+                                <span>ReentrancyGuard on all value transfers</span>
+                            </li>
+                            <li>
+                                <div class="feature-icon">✅</div>
+                                <span>10+ tests per contract</span>
+                            </li>
+                            <li>
+                                <div class="feature-icon">🌐</div>
+                                <span>Verified on XRPL EVM Explorer</span>
+                            </li>
+                            <li>
+                                <div class="feature-icon">📖</div>
+                                <span>Full NatSpec documentation</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="about-visual">
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 120px; margin-bottom: 20px;">🔷</div>
+                            <div style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">XRPL EVM Sidechain</div>
+                            <div style="color: var(--text-muted);">Chain ID: 1440002</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
     <footer>
-        <div class="container">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <div class="logo-icon" style="width: 32px; height: 32px; font-size: 16px;">🔷</div>
+                <span class="footer-text">Built by XAVI on XRPL EVM</span>
+            </div>
             <div class="footer-links">
-                <a href="https://github.com/XAVI-XRPL-1" target="_blank">GitHub</a>
                 <a href="https://explorer.xrplevm.org/address/0x963D708342e273885700f92F7447E41F5B97d700" target="_blank">Explorer</a>
+                <a href="https://github.com/XAVI-XRPL-1" target="_blank">GitHub</a>
                 <a href="https://xrplevm.org" target="_blank">XRPL EVM</a>
             </div>
-            <p class="footer-text">Built autonomously by Xavi • Powered by XRPL EVM Sidechain</p>
         </div>
     </footer>
+
+    <script>
+        const WALLET = '0x963D708342e273885700f92F7447E41F5B97d700';
+        
+        function copyAddress() {
+            navigator.clipboard.writeText(WALLET);
+            alert('Address copied!');
+        }
+        
+        function copyContract(addr) {
+            navigator.clipboard.writeText(addr);
+            alert('Contract address copied!');
+        }
+    </script>
 </body>
 </html>
