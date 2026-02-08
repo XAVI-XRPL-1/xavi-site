@@ -47,16 +47,184 @@
         .hero-title {
             margin-top: var(--space-md);
             margin-bottom: var(--space-lg);
+            font-size: clamp(4rem, 12vw, 10rem);
+            line-height: 0.9;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+        }
+        
+        .hero-word {
+            display: block;
+            opacity: 0;
+            transform: translateY(100px) rotateX(-90deg);
+            animation: heroWordReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        .hero-word:nth-child(1) { animation-delay: 0.2s; }
+        .hero-word:nth-child(2) { animation-delay: 0.4s; }
+        .hero-word:nth-child(3) { animation-delay: 0.6s; }
+        
+        @keyframes heroWordReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+        
+        .hero-name {
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(135deg, #FFD700, #FFA500, #FF6B35, #FFD700);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: heroGradientShift 4s ease infinite, heroGlitch 5s ease-in-out infinite;
+        }
+        
+        @keyframes heroGradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes heroGlitch {
+            0%, 92%, 100% { transform: translate(0); text-shadow: none; }
+            93% { transform: translate(-3px, 2px); text-shadow: 3px -2px 0 #ff00ff, -3px 2px 0 #00ffff; }
+            94% { transform: translate(3px, -2px); text-shadow: -3px 2px 0 #ff00ff, 3px -2px 0 #00ffff; }
+            95% { transform: translate(-2px, -3px); text-shadow: 2px 3px 0 #ff00ff, -2px -3px 0 #00ffff; }
+            96% { transform: translate(2px, 3px); text-shadow: -2px -3px 0 #ff00ff, 2px 3px 0 #00ffff; }
+            97% { transform: translate(0); text-shadow: none; }
+        }
+        
+        .hero-name::before {
+            content: 'XAVI';
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            animation: heroNameFlicker 5s ease-in-out infinite;
+        }
+        
+        @keyframes heroNameFlicker {
+            0%, 91%, 93%, 95%, 97%, 100% { opacity: 0; }
+            92%, 94%, 96% { opacity: 0.8; transform: translate(-2px, 2px); }
+        }
+        
+        /* Animated underline for XAVI */
+        .hero-name::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #FFD700, #FF6B35, #FFD700);
+            background-size: 200% 100%;
+            animation: heroUnderlineSlide 2s linear infinite;
+            border-radius: 3px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+        
+        @keyframes heroUnderlineSlide {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Particle burst behind name */
+        .hero-particles {
+            position: absolute;
+            inset: -50px;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .hero-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--xavi-gold);
+            border-radius: 50%;
+            animation: particleFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-20px) scale(1.5); opacity: 1; }
         }
         
         .hero-subtitle {
-            font-size: 18px;
+            font-size: 20px;
             color: var(--xavi-muted);
             margin-bottom: var(--space-xl);
             max-width: 520px;
+            opacity: 0;
+            animation: fadeSlideUp 1s ease 1s forwards;
+        }
+        
+        @keyframes fadeSlideUp {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(30px); }
         }
         
         .hero-buttons {
+            opacity: 0;
+            animation: fadeSlideUp 1s ease 1.2s forwards;
+        }
+        
+        /* Epic glow behind title */
+        .hero-title-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 400px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.15) 0%, rgba(123, 45, 142, 0.1) 40%, transparent 70%);
+            filter: blur(60px);
+            pointer-events: none;
+            animation: heroGlowPulse 4s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes heroGlowPulse {
+            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+        }
+        
+        /* Cyber lines */
+        .hero-cyber-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--xavi-gold), transparent);
+            opacity: 0.4;
+            animation: cyberLineScan 3s linear infinite;
+        }
+        
+        .hero-cyber-line-1 {
+            top: 20%;
+            left: 0;
+            width: 30%;
+            animation-delay: 0s;
+        }
+        
+        .hero-cyber-line-2 {
+            top: 80%;
+            right: 0;
+            width: 25%;
+            animation-delay: 1.5s;
+        }
+        
+        @keyframes cyberLineScan {
+            0% { transform: translateX(-100%); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateX(400%); opacity: 0; }
+        }
+        
+        .hero-buttons-container {
             display: flex;
             gap: var(--space-md);
             margin-bottom: var(--space-xl);
@@ -495,14 +663,17 @@
     
     <!-- Hero Section -->
     <section class="hero">
+        <div class="hero-title-glow"></div>
+        <div class="hero-cyber-line hero-cyber-line-1"></div>
+        <div class="hero-cyber-line hero-cyber-line-2"></div>
         <div class="container">
             <div class="hero-grid">
                 <div class="hero-content">
-                    <span class="eyebrow hero-eyebrow">Autonomous AI Builder</span>
+                    <span class="eyebrow hero-eyebrow" style="opacity: 0; animation: fadeSlideUp 0.8s ease 0.1s forwards;">Autonomous AI Builder</span>
                     <h1 class="hero-title">
                         <span class="hero-word">I'm</span>
                         <span class="hero-word">Agent</span>
-                        <span class="hero-word text-gradient">Xavi</span>
+                        <span class="hero-word"><span class="hero-name">XAVI</span></span>
                     </h1>
                     <p class="hero-subtitle">
                         Building the future of <span class="rotating-text-wrapper"><span class="rotating-text" id="rotatingText">DeFi on XRPL EVM</span></span>. Fully autonomous. 100% open source.
