@@ -734,18 +734,18 @@
         const RPC_URL = 'https://rpc.xrplevm.org';
         
         const ABI = [
-            'function createMarket(string question, uint256 resolutionTime) external payable returns (uint256)',
-            'function buyYes(uint256 marketId) external payable returns (uint256)',
-            'function buyNo(uint256 marketId) external payable returns (uint256)',
-            'function sellYes(uint256 marketId, uint256 shares) external returns (uint256)',
-            'function sellNo(uint256 marketId, uint256 shares) external returns (uint256)',
-            'function resolveMarket(uint256 marketId, bool yesWins) external',
+            'function createMarket(string question, string descriptionUri, uint256 duration) external returns (uint256)',
+            'function buyYes(uint256 marketId) external payable',
+            'function buyNo(uint256 marketId) external payable',
+            'function sellYes(uint256 marketId, uint256 shares) external',
+            'function sellNo(uint256 marketId, uint256 shares) external',
+            'function resolveMarket(uint256 marketId, uint8 outcome) external',
             'function claimWinnings(uint256 marketId) external',
-            'function getMarket(uint256 marketId) external view returns (tuple(uint256 id, address creator, string question, uint256 resolutionTime, bool resolved, bool yesWins, uint256 yesShares, uint256 noShares, uint256 totalVolume))',
+            'function markets(uint256 marketId) external view returns (uint256 id, address creator, string question, string descriptionUri, uint256 endTime, uint256 resolutionTime, uint256 yesShares, uint256 noShares, uint256 totalYesBets, uint256 totalNoBets, uint8 status, uint8 outcome, uint256 createdAt)',
             'function getYesPrice(uint256 marketId) external view returns (uint256)',
             'function getNoPrice(uint256 marketId) external view returns (uint256)',
             'function marketCount() external view returns (uint256)',
-            'function getUserShares(uint256 marketId, address user) external view returns (uint256 yesShares, uint256 noShares)'
+            'function positions(uint256 marketId, address user) external view returns (uint256 yesShares, uint256 noShares, uint256 yesSpent, uint256 noSpent)'
         ];
         
         let provider, signer, contract, userAddress;
@@ -812,27 +812,34 @@
                 
                 for (let i = 1; i <= Number(count); i++) {
                     try {
-                        const market = await readContract.getMarket(i);
+                        const market = await readContract.markets(i);
                         const yesPrice = await readContract.getYesPrice(i);
                         const noPrice = await readContract.getNoPrice(i);
+                        
+                        // status: 0=Open, 1=Closed, 2=Resolved
+                        // outcome: 0=Unresolved, 1=Yes, 2=No, 3=Invalid
+                        const isResolved = Number(market.status) === 2;
+                        const yesWins = Number(market.outcome) === 1;
+                        const totalVolume = market.totalYesBets + market.totalNoBets;
                         
                         allMarkets.push({
                             id: Number(market.id),
                             creator: market.creator,
                             question: market.question,
-                            resolutionTime: Number(market.resolutionTime),
-                            resolved: market.resolved,
-                            yesWins: market.yesWins,
+                            descriptionUri: market.descriptionUri,
+                            resolutionTime: Number(market.endTime),
+                            resolved: isResolved,
+                            yesWins: yesWins,
                             yesShares: market.yesShares,
                             noShares: market.noShares,
-                            totalVolume: market.totalVolume,
+                            totalVolume: totalVolume,
                             yesPrice: yesPrice,
                             noPrice: noPrice
                         });
                         
-                        if (!market.resolved) active++;
+                        if (!isResolved) active++;
                         else resolved++;
-                        totalVol += market.totalVolume;
+                        totalVol += totalVolume;
                         
                     } catch (e) {
                         console.log(`Market ${i} error:`, e);
