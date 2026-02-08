@@ -719,7 +719,7 @@ html {
     border-radius: 50%;
     filter: blur(80px);
     pointer-events: none;
-    z-index: -1;
+    z-index: -5;
 }
 
 .ambient-orb-1 {
