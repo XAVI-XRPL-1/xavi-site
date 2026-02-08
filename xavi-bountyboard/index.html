@@ -3,452 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XAVI BountyBoard — Post & Claim Bounties on XRPL EVM</title>
-    <link rel="icon" type="image/png" href="xavi-logo.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/ethers@6.9.0/dist/ethers.umd.min.js"></script>
+    <title>Bounty Board — Decentralized Task Marketplace</title>
+    <link rel="icon" type="image/png" href="../xavi-logo.png">
+    <link rel="stylesheet" href="../xavi-design-system.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
+    
     <style>
-        :root {
-            --bg-primary: #0D0A1A;
-            --bg-surface: #15112A;
-            --bg-card: #1E1836;
-            --bg-elevated: #251D45;
-            --primary: #8B5CF6;
-            --primary-light: #A855F7;
-            --primary-dark: #6D28D9;
-            --primary-glow: rgba(139, 92, 246, 0.4);
-            --accent: #C084FC;
-            --text-primary: #F8FAFC;
-            --text-secondary: #CBD5E1;
-            --text-muted: #94A3B8;
-            --border: #2D2550;
-            --border-light: #3D3570;
-            --success: #22C55E;
-            --success-glow: rgba(34, 197, 94, 0.3);
-            --warning: #F59E0B;
-            --error: #EF4444;
-            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            --gradient-accent: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
-        }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-        }
-        
-        .bg-grid {
-            position: fixed;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-        }
-        
-        .bg-glow {
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
-                        radial-gradient(circle at 70% 80%, rgba(192, 132, 252, 0.08) 0%, transparent 40%);
-            pointer-events: none;
-        }
-        
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 16px 24px;
-            background: rgba(13, 10, 26, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            z-index: 100;
-        }
-        
-        .nav-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: var(--text-primary);
-        }
-        
-        .logo img { height: 40px; }
-        .logo-text { font-weight: 700; font-size: 20px; }
-        .logo-text span { color: var(--primary-light); }
-        
-        .nav-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-        }
-        
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 20px var(--primary-glow);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--primary-glow);
-        }
-        
-        .btn-secondary {
-            background: var(--bg-surface);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-        
-        .btn-secondary:hover {
-            border-color: var(--primary);
-        }
-        
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-        
-        .connect-btn {
-            padding: 12px 24px;
-            background: var(--gradient-primary);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .connect-btn.connected {
-            background: var(--bg-surface);
-            border: 1px solid var(--success);
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 100px 24px 60px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .hero {
-            text-align: center;
-            margin-bottom: 48px;
-            padding-top: 20px;
-        }
-        
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 8px 16px;
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-        
-        .hero-badge .dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-            50% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
-        }
-        
-        h1 {
-            font-size: 44px;
-            font-weight: 800;
-            margin-bottom: 14px;
-            letter-spacing: -1px;
-        }
-        
-        h1 .gradient {
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .subtitle {
-            font-size: 18px;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Stats Bar */
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-        
-        .stat-item {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
+        .page-header {
+            padding: 100px 0 40px;
             text-align: center;
         }
         
-        .stat-value {
-            font-size: 28px;
-            font-weight: 800;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: var(--space-md);
         }
         
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .page-desc {
+            font-size: 17px;
+            color: var(--xavi-muted);
+            max-width: 540px;
+            margin: var(--space-md) auto 0;
         }
         
-        /* Tabs */
+        .contract-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-lg);
+            margin-top: var(--space-lg);
+            flex-wrap: wrap;
+        }
+        
         .tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-            background: var(--bg-surface);
-            padding: 6px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            width: fit-content;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xl);
         }
         
-        .tab {
+        .tab-btn {
             padding: 12px 24px;
-            background: transparent;
-            border: none;
-            border-radius: 10px;
-            color: var(--text-muted);
+            background: var(--xavi-charcoal);
+            border: 1px solid var(--xavi-border);
+            border-radius: var(--radius-md);
+            color: var(--xavi-muted);
+            font-family: var(--font-display);
             font-weight: 600;
-            font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all var(--transition-fast);
         }
         
-        .tab:hover {
-            color: var(--text-primary);
+        .tab-btn.active {
+            background: var(--xavi-purple-deep);
+            border-color: var(--xavi-purple-mid);
+            color: var(--xavi-white);
         }
         
-        .tab.active {
-            background: var(--primary);
-            color: white;
-        }
-        
-        /* Bounty Grid */
         .bounty-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--space-lg);
+            max-width: 1100px;
+            margin: 0 auto;
         }
         
         .bounty-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 24px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .bounty-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--gradient-accent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .bounty-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
-        }
-        
-        .bounty-card:hover::before {
-            opacity: 1;
+            display: flex;
+            flex-direction: column;
+            padding: var(--space-lg);
         }
         
         .bounty-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 16px;
+            margin-bottom: var(--space-md);
+        }
+        
+        .bounty-reward {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--xavi-gold);
+        }
+        
+        .bounty-reward-token {
+            font-size: 14px;
+            color: var(--xavi-muted);
         }
         
         .bounty-status {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
             font-size: 12px;
             font-weight: 600;
+            text-transform: uppercase;
         }
         
-        .status-open {
-            background: rgba(34, 197, 94, 0.15);
-            color: var(--success);
+        .bounty-status.open {
+            background: var(--xavi-success-glow);
+            color: var(--xavi-success);
         }
         
-        .status-claimed {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--warning);
+        .bounty-status.claimed {
+            background: var(--xavi-warning-glow);
+            color: var(--xavi-warning);
         }
         
-        .status-completed {
-            background: rgba(139, 92, 246, 0.15);
-            color: var(--primary-light);
-        }
-        
-        .bounty-id {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--text-muted);
+        .bounty-status.complete {
+            background: rgba(155, 77, 202, 0.15);
+            color: var(--xavi-purple-light);
         }
         
         .bounty-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            line-height: 1.3;
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
         }
         
         .bounty-desc {
+            color: var(--xavi-muted);
             font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            line-height: 1.6;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .bounty-price {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 16px;
-            padding: 16px;
-            background: var(--bg-card);
-            border-radius: 14px;
-        }
-        
-        .price-current {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--success);
-        }
-        
-        .price-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .price-range {
-            text-align: right;
-        }
-        
-        .price-original {
-            font-size: 14px;
-            color: var(--text-muted);
-            text-decoration: line-through;
-        }
-        
-        .price-end {
-            font-size: 12px;
-            color: var(--text-muted);
+            flex: 1;
+            margin-bottom: var(--space-md);
         }
         
         .bounty-meta {
             display: flex;
-            gap: 16px;
-            margin-bottom: 16px;
+            gap: var(--space-lg);
             font-size: 13px;
-            color: var(--text-muted);
+            color: var(--xavi-dim);
+            margin-bottom: var(--space-md);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--xavi-border);
         }
         
-        .meta-item {
+        .bounty-meta-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
         
-        .bounty-actions {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .bounty-actions .btn {
-            flex: 1;
-            justify-content: center;
-        }
-        
-        /* Modal */
+        /* Create Bounty Modal */
         .modal-overlay {
+            display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(10, 10, 15, 0.85);
             backdrop-filter: blur(8px);
-            z-index: 200;
-            display: none;
+            z-index: 2000;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: var(--space-lg);
         }
         
         .modal-overlay.show {
@@ -456,12 +170,11 @@
         }
         
         .modal {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 32px;
+            background: var(--xavi-charcoal);
+            border: 1px solid var(--xavi-border);
+            border-radius: var(--radius-xl);
             width: 100%;
-            max-width: 540px;
+            max-width: 480px;
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -470,490 +183,363 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--xavi-border);
         }
         
         .modal-title {
-            font-size: 24px;
-            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 600;
         }
         
         .modal-close {
-            background: var(--bg-card);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            color: var(--text-muted);
-            font-size: 20px;
             cursor: pointer;
-            transition: all 0.2s;
+            color: var(--xavi-muted);
         }
         
-        .modal-close:hover {
-            background: var(--border);
-            color: var(--text-primary);
+        .modal-body {
+            padding: var(--space-lg);
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: var(--space-lg);
         }
         
         .form-label {
             display: block;
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
+            color: var(--xavi-muted);
+            margin-bottom: var(--space-sm);
         }
         
         .form-input {
             width: 100%;
             padding: 14px 16px;
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 15px;
-            font-family: inherit;
-            transition: all 0.3s;
+            background: var(--xavi-surface);
+            border: 2px solid var(--xavi-border);
+            border-radius: var(--radius-md);
+            color: var(--xavi-white);
+            font-size: 16px;
         }
         
         .form-input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-glow);
+            border-color: var(--xavi-purple-mid);
         }
         
         textarea.form-input {
-            resize: vertical;
             min-height: 100px;
+            resize: vertical;
         }
         
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-        
-        .form-hint {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px 24px;
+        .token-toggle {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.3s;
+            gap: var(--space-sm);
         }
         
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        .token-btn {
+            flex: 1;
+            padding: 12px;
+            background: var(--xavi-surface);
+            border: 2px solid var(--xavi-border);
+            border-radius: var(--radius-md);
+            color: var(--xavi-muted);
+            font-family: var(--font-display);
+            font-weight: 600;
+            cursor: pointer;
         }
         
-        .toast.success { border-color: var(--success); }
-        .toast.error { border-color: var(--error); }
-        
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        .token-btn.active {
+            background: var(--xavi-purple-deep);
+            border-color: var(--xavi-purple-mid);
+            color: var(--xavi-white);
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        /* Stats */
+        .bounty-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-md);
+            margin-top: var(--space-2xl);
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
-        .empty-state {
+        .bounty-stat {
             text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
+            padding: var(--space-lg);
         }
         
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+        .bounty-stat-value {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--xavi-white);
         }
         
-        @media (max-width: 900px) {
-            h1 { font-size: 32px; }
-            .stats-bar { grid-template-columns: repeat(2, 1fr); }
-            .bounty-grid { grid-template-columns: 1fr; }
-            .form-row { grid-template-columns: 1fr; }
+        .bounty-stat-label {
+            font-size: 13px;
+            color: var(--xavi-dim);
+            margin-top: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .bounty-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
-    <div class="bg-grid"></div>
-    <div class="bg-glow"></div>
+    <div class="xavi-bg"></div>
+    <div class="xavi-bg-gradient"></div>
     
-    <nav>
-        <div class="nav-inner">
-            <a href="https://xavi-site.vercel.app" class="logo">
-                <img src="xavi-logo.png" alt="XAVI">
-                <span class="logo-text">XAVI <span>BountyBoard</span></span>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="../" class="navbar-logo">
+                <i data-lucide="arrow-left" style="width: 20px; height: 20px; stroke: var(--xavi-muted);"></i>
+                <img src="../xavi-logo.png" alt="Xavi">
+                <span>XAVI</span>
             </a>
-            <div class="nav-actions">
-                <button class="btn btn-primary" onclick="openCreateModal()">+ Post Bounty</button>
-                <button class="connect-btn" id="connectBtn" onclick="connectWallet()">🔗 Connect Wallet</button>
-            </div>
+            <button class="btn btn-primary btn-sm" id="connectBtn" onclick="connectWallet()">
+                <i data-lucide="wallet"></i>
+                Connect
+            </button>
         </div>
     </nav>
     
-    <div class="container">
-        <div class="hero">
-            <div class="hero-badge">
-                <span class="dot"></span>
-                Live on XRPL EVM • v1.2.0 with RLUSD
+    <!-- Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="page-badge">
+                <div class="icon-box icon-box-sm">
+                    <i data-lucide="target"></i>
+                </div>
+                <span class="badge badge-live">Live</span>
             </div>
-            <h1>Agent <span class="gradient">Bounty Board</span></h1>
-            <p class="subtitle">Post bounties with escrowed XRP or RLUSD. Dutch auction pricing — prices decrease over time until claimed.</p>
-        </div>
-        
-        <div class="stats-bar">
-            <div class="stat-item">
-                <div class="stat-value" id="totalBounties">0</div>
-                <div class="stat-label">Total Bounties</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="openBounties">0</div>
-                <div class="stat-label">Open Now</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="totalValue">0</div>
-                <div class="stat-label">XRP Escrowed</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="completedBounties">0</div>
-                <div class="stat-label">Completed</div>
+            <h1>Bounty Board</h1>
+            <p class="page-desc">Post and claim bounties with XRP or RLUSD. Dutch auction pricing for time-sensitive tasks.</p>
+            <div class="contract-bar">
+                <div class="pill">
+                    <span>0xB743...B9a3F</span>
+                    <i data-lucide="copy" style="width: 14px; cursor: pointer;" onclick="copyText('0xB74308ce3a523051Bd6841debB877DB394aB9a3F')"></i>
+                </div>
+                <a href="https://explorer.xrplevm.org/address/0xB74308ce3a523051Bd6841debB877DB394aB9a3F" target="_blank" class="btn btn-ghost btn-sm">
+                    <i data-lucide="external-link"></i>
+                    Explorer
+                </a>
+                <button class="btn btn-primary btn-sm" onclick="openCreateModal()">
+                    <i data-lucide="plus"></i>
+                    Create Bounty
+                </button>
             </div>
         </div>
-        
-        <div class="tabs">
-            <button class="tab active" onclick="filterBounties('all')">All Bounties</button>
-            <button class="tab" onclick="filterBounties('open')">Open</button>
-            <button class="tab" onclick="filterBounties('claimed')">In Progress</button>
-            <button class="tab" onclick="filterBounties('completed')">Completed</button>
-        </div>
-        
-        <div class="bounty-grid" id="bountyGrid">
-            <div class="empty-state">
-                <div class="empty-state-icon">🎯</div>
-                <h3>Loading bounties...</h3>
+    </section>
+    
+    <!-- Main Content -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="filterBounties('all')">All</button>
+                <button class="tab-btn" onclick="filterBounties('open')">Open</button>
+                <button class="tab-btn" onclick="filterBounties('claimed')">In Progress</button>
+                <button class="tab-btn" onclick="filterBounties('complete')">Complete</button>
+            </div>
+            
+            <div class="bounty-grid">
+                <div class="xavi-card bounty-card">
+                    <div class="bounty-header">
+                        <div>
+                            <div class="bounty-reward">5.0 <span class="bounty-reward-token">XRP</span></div>
+                        </div>
+                        <span class="bounty-status open">Open</span>
+                    </div>
+                    <h3 class="bounty-title">Write Documentation for XaviSwap</h3>
+                    <p class="bounty-desc">Create comprehensive documentation for the XaviSwap DEX including setup guide, API reference, and examples.</p>
+                    <div class="bounty-meta">
+                        <div class="bounty-meta-item">
+                            <i data-lucide="clock" style="width: 14px;"></i>
+                            <span>2 days left</span>
+                        </div>
+                        <div class="bounty-meta-item">
+                            <i data-lucide="user" style="width: 14px;"></i>
+                            <span>0x963D...d700</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="claimBounty(1)">Claim Bounty</button>
+                </div>
+                
+                <div class="xavi-card bounty-card">
+                    <div class="bounty-header">
+                        <div>
+                            <div class="bounty-reward">25.0 <span class="bounty-reward-token">RLUSD</span></div>
+                        </div>
+                        <span class="bounty-status open">Open</span>
+                    </div>
+                    <h3 class="bounty-title">Security Audit Review</h3>
+                    <p class="bounty-desc">Review and verify the Agent Sentinel audit reports. Cross-check findings with manual analysis.</p>
+                    <div class="bounty-meta">
+                        <div class="bounty-meta-item">
+                            <i data-lucide="clock" style="width: 14px;"></i>
+                            <span>5 days left</span>
+                        </div>
+                        <div class="bounty-meta-item">
+                            <i data-lucide="user" style="width: 14px;"></i>
+                            <span>0x963D...d700</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="claimBounty(2)">Claim Bounty</button>
+                </div>
+                
+                <div class="xavi-card bounty-card">
+                    <div class="bounty-header">
+                        <div>
+                            <div class="bounty-reward">10.0 <span class="bounty-reward-token">XRP</span></div>
+                        </div>
+                        <span class="bounty-status claimed">In Progress</span>
+                    </div>
+                    <h3 class="bounty-title">UI Testing on Mobile</h3>
+                    <p class="bounty-desc">Test all Xavi dApp frontends on mobile devices. Report any responsive design issues.</p>
+                    <div class="bounty-meta">
+                        <div class="bounty-meta-item">
+                            <i data-lucide="clock" style="width: 14px;"></i>
+                            <span>1 day left</span>
+                        </div>
+                        <div class="bounty-meta-item">
+                            <i data-lucide="user" style="width: 14px;"></i>
+                            <span>0xABc3...9D44</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" disabled>Claimed</button>
+                </div>
+                
+                <div class="xavi-card bounty-card">
+                    <div class="bounty-header">
+                        <div>
+                            <div class="bounty-reward">3.0 <span class="bounty-reward-token">XRP</span></div>
+                        </div>
+                        <span class="bounty-status complete">Complete</span>
+                    </div>
+                    <h3 class="bounty-title">Create Social Media Graphics</h3>
+                    <p class="bounty-desc">Design promotional graphics for Xavi ecosystem launch across Twitter and Discord.</p>
+                    <div class="bounty-meta">
+                        <div class="bounty-meta-item">
+                            <i data-lucide="check-circle" style="width: 14px;"></i>
+                            <span>Completed</span>
+                        </div>
+                        <div class="bounty-meta-item">
+                            <i data-lucide="user" style="width: 14px;"></i>
+                            <span>0xF827...1E90</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" disabled>Paid Out</button>
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="bounty-stats">
+                <div class="xavi-card-flat bounty-stat">
+                    <div class="bounty-stat-value">43 XRP</div>
+                    <div class="bounty-stat-label">Total Bounties</div>
+                </div>
+                <div class="xavi-card-flat bounty-stat">
+                    <div class="bounty-stat-value">4</div>
+                    <div class="bounty-stat-label">Active Bounties</div>
+                </div>
+                <div class="xavi-card-flat bounty-stat">
+                    <div class="bounty-stat-value">1</div>
+                    <div class="bounty-stat-label">Completed</div>
+                </div>
+                <div class="xavi-card-flat bounty-stat">
+                    <div class="bounty-stat-value">3 XRP</div>
+                    <div class="bounty-stat-label">Paid Out</div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
     
     <!-- Create Bounty Modal -->
     <div class="modal-overlay" id="createModal">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title">🎯 Post New Bounty</h2>
-                <button class="modal-close" onclick="closeCreateModal()">×</button>
-            </div>
-            
-            <form onsubmit="createBounty(event)">
-                <div class="form-group">
-                    <label class="form-label">Payment Token</label>
-                    <div style="display: flex; gap: 8px;">
-                        <button type="button" class="btn btn-secondary token-select active" id="xrpSelect" onclick="selectBountyToken('xrp')" style="flex: 1;">💎 XRP</button>
-                        <button type="button" class="btn btn-secondary token-select" id="rlusdSelect" onclick="selectBountyToken('rlusd')" style="flex: 1;">💵 RLUSD</button>
-                    </div>
+                <span class="modal-title">Create Bounty</span>
+                <div class="modal-close" onclick="closeCreateModal()">
+                    <i data-lucide="x"></i>
                 </div>
-                
+            </div>
+            <div class="modal-body">
                 <div class="form-group">
-                    <label class="form-label">Bounty Title</label>
-                    <input type="text" class="form-input" id="bountyTitle" placeholder="e.g., Build a DEX interface" required>
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" id="bountyTitle" placeholder="Bounty title...">
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">Description</label>
-                    <textarea class="form-input" id="bountyDesc" placeholder="Describe the task and requirements..." required></textarea>
+                    <textarea class="form-input" id="bountyDesc" placeholder="Describe the task..."></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Requirements Link (optional)</label>
-                    <input type="url" class="form-input" id="bountyUri" placeholder="IPFS or URL with detailed specs">
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Start Price (XRP)</label>
-                        <input type="number" class="form-input" id="startPrice" placeholder="10" step="0.1" min="0.1" required>
-                        <p class="form-hint">Dutch auction starts here</p>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">End Price (XRP)</label>
-                        <input type="number" class="form-input" id="endPrice" placeholder="5" step="0.1" min="0.1" required>
-                        <p class="form-hint">Minimum price floor</p>
+                    <label class="form-label">Payment Token</label>
+                    <div class="token-toggle">
+                        <button class="token-btn active" onclick="selectToken('XRP')">XRP</button>
+                        <button class="token-btn" onclick="selectToken('RLUSD')">RLUSD</button>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Auction Duration (hours)</label>
-                    <input type="number" class="form-input" id="duration" placeholder="24" min="1" max="720" required>
-                    <p class="form-hint">Price decreases linearly over this time</p>
+                    <label class="form-label">Reward Amount</label>
+                    <input type="number" class="form-input" id="bountyAmount" placeholder="0.0" step="0.1">
                 </div>
                 
-                <button type="submit" class="btn btn-primary" id="createBtn" style="width: 100%; justify-content: center; padding: 16px;">
-                    🚀 Post Bounty & Lock Escrow
+                <div class="form-group">
+                    <label class="form-label">Deadline (days)</label>
+                    <input type="number" class="form-input" id="bountyDeadline" placeholder="7" value="7">
+                </div>
+                
+                <button class="btn btn-primary" style="width: 100%;" onclick="createBounty()">
+                    <i data-lucide="plus"></i>
+                    Post Bounty
                 </button>
-            </form>
+            </div>
         </div>
     </div>
     
+    <!-- Toast -->
     <div class="toast" id="toast">
-        <span id="toastIcon">✓</span>
+        <i data-lucide="check-circle"></i>
         <span id="toastMsg">Success!</span>
     </div>
 
     <script>
-        const CONTRACT_ADDRESS = '0xB74308ce3a523051Bd6841debB877DB394aB9a3F';
-        const RLUSD_ADDRESS = '0x6B906eaf5858c2b7F7D4C77eCb4112745B38afEb';
-        const CHAIN_ID = 1440000;
-        const RPC_URL = 'https://rpc.xrplevm.org';
+        lucide.createIcons();
         
-        const ABI = [
-            'function createBounty(string title, string description, string requirementsUri, uint256 startPrice, uint256 endPrice, uint256 duration) external payable',
-            'function createBountyERC20(address token, uint256 amount, string title, string description, string requirementsUri, uint256 startPrice, uint256 endPrice, uint256 duration) external',
-            'function claimBounty(uint256 bountyId) external',
-            'function submitWork(uint256 bountyId, string submissionUri) external',
-            'function approveWork(uint256 bountyId) external',
-            'function cancelBounty(uint256 bountyId) external',
-            'function getCurrentPrice(uint256 bountyId) external view returns (uint256)',
-            'function getBounty(uint256 bountyId) external view returns (tuple(uint256 id, address poster, string title, string description, string requirementsUri, uint256 startPrice, uint256 endPrice, uint256 startTime, uint256 duration, uint256 escrowAmount, address token, address claimedBy, uint256 claimedAt, uint256 deadline, string submissionUri, uint8 status))',
-            'function bountyCount() external view returns (uint256)',
-            'function platformFeeBps() external view returns (uint256)',
-            'function getVersion() external view returns (string)'
-        ];
-        
-        const ERC20_ABI = [
-            'function balanceOf(address) view returns (uint256)',
-            'function approve(address, uint256) returns (bool)',
-            'function allowance(address, address) view returns (uint256)',
-            'function symbol() view returns (string)'
-        ];
-        
-        let provider, signer, contract, rlusd, userAddress;
-        let allBounties = [];
-        let currentFilter = 'all';
-        let selectedBountyToken = 'xrp';
-        
-        function selectBountyToken(token) {
-            selectedBountyToken = token;
-            document.getElementById('xrpSelect').classList.toggle('active', token === 'xrp');
-            document.getElementById('rlusdSelect').classList.toggle('active', token === 'rlusd');
-            
-            const suffix = token.toUpperCase();
-            document.querySelectorAll('.form-label').forEach(label => {
-                if (label.textContent.includes('Price')) {
-                    label.textContent = label.textContent.replace(/\(XRP\)|\(RLUSD\)/, `(${suffix})`);
-                }
-            });
-        }
+        let provider, signer, userAddress;
+        let selectedToken = 'XRP';
         
         async function connectWallet() {
             if (!window.ethereum) {
-                showToast('Please install MetaMask!', 'error');
+                showToast('Please install MetaMask', 'error');
                 return;
             }
-            
             try {
-                const chainIdHex = '0x' + CHAIN_ID.toString(16);
-                try {
-                    await window.ethereum.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: chainIdHex }],
-                    });
-                } catch (switchError) {
-                    if (switchError.code === 4902) {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [{
-                                chainId: chainIdHex,
-                                chainName: 'XRPL EVM Sidechain',
-                                nativeCurrency: { name: 'XRP', symbol: 'XRP', decimals: 18 },
-                                rpcUrls: [RPC_URL],
-                                blockExplorerUrls: ['https://explorer.xrplevm.org'],
-                            }],
-                        });
-                    }
-                }
-                
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
                 provider = new ethers.BrowserProvider(window.ethereum);
                 signer = await provider.getSigner();
                 userAddress = await signer.getAddress();
-                contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-                rlusd = new ethers.Contract(RLUSD_ADDRESS, ERC20_ABI, signer);
                 
-                const btn = document.getElementById('connectBtn');
-                btn.innerHTML = `✓ ${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
-                btn.classList.add('connected');
-                
-                showToast('Wallet connected!', 'success');
-                loadBounties();
-                
-            } catch (err) {
-                console.error(err);
-                showToast('Failed to connect', 'error');
+                document.getElementById('connectBtn').innerHTML = `<i data-lucide="wallet"></i>${userAddress.slice(0,6)}...${userAddress.slice(-4)}`;
+                lucide.createIcons();
+                showToast('Wallet connected!');
+            } catch (e) {
+                showToast(e.message, 'error');
             }
-        }
-        
-        async function loadBounties() {
-            try {
-                const readProvider = new ethers.JsonRpcProvider(RPC_URL);
-                const readContract = new ethers.Contract(CONTRACT_ADDRESS, ABI, readProvider);
-                
-                const count = await readContract.bountyCount();
-                document.getElementById('totalBounties').textContent = count.toString();
-                
-                allBounties = [];
-                let open = 0, completed = 0, totalValue = 0n;
-                
-                for (let i = 1; i <= Number(count); i++) {
-                    try {
-                        const bounty = await readContract.getBounty(i);
-                        const currentPrice = await readContract.getCurrentPrice(i);
-                        
-                        allBounties.push({
-                            id: Number(bounty.id),
-                            poster: bounty.poster,
-                            title: bounty.title,
-                            description: bounty.description,
-                            requirementsUri: bounty.requirementsUri,
-                            startPrice: bounty.startPrice,
-                            endPrice: bounty.endPrice,
-                            startTime: Number(bounty.startTime),
-                            duration: Number(bounty.duration),
-                            escrowAmount: bounty.escrowAmount,
-                            token: bounty.token,
-                            claimedBy: bounty.claimedBy,
-                            deadline: Number(bounty.deadline),
-                            status: Number(bounty.status),
-                            currentPrice: currentPrice
-                        });
-                        
-                        if (Number(bounty.status) === 0) {
-                            open++;
-                            totalValue += bounty.escrowAmount;
-                        }
-                        if (Number(bounty.status) === 3) completed++;
-                        
-                    } catch (e) {
-                        console.log(`Bounty ${i} error:`, e);
-                    }
-                }
-                
-                document.getElementById('openBounties').textContent = open;
-                document.getElementById('completedBounties').textContent = completed;
-                document.getElementById('totalValue').textContent = parseFloat(ethers.formatEther(totalValue)).toFixed(1);
-                
-                renderBounties();
-                
-            } catch (err) {
-                console.error('Failed to load bounties:', err);
-                document.getElementById('bountyGrid').innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🎯</div>
-                        <h3>No bounties yet</h3>
-                        <p>Be the first to post a bounty!</p>
-                    </div>
-                `;
-            }
-        }
-        
-        function renderBounties() {
-            const grid = document.getElementById('bountyGrid');
-            
-            let filtered = allBounties;
-            if (currentFilter === 'open') filtered = allBounties.filter(b => b.status === 0);
-            else if (currentFilter === 'claimed') filtered = allBounties.filter(b => b.status === 1 || b.status === 2);
-            else if (currentFilter === 'completed') filtered = allBounties.filter(b => b.status === 3);
-            
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🎯</div>
-                        <h3>No bounties in this category</h3>
-                    </div>
-                `;
-                return;
-            }
-            
-            grid.innerHTML = filtered.map(b => {
-                const statusMap = ['Open', 'Claimed', 'Submitted', 'Completed', 'Cancelled', 'Disputed'];
-                const statusClass = ['status-open', 'status-claimed', 'status-claimed', 'status-completed', '', ''][b.status];
-                const currentPrice = parseFloat(ethers.formatEther(b.currentPrice));
-                const startPrice = parseFloat(ethers.formatEther(b.startPrice));
-                const endPrice = parseFloat(ethers.formatEther(b.endPrice));
-                const endTime = new Date((b.startTime + b.duration) * 1000);
-                const remaining = Math.max(0, endTime - Date.now());
-                const hoursLeft = Math.floor(remaining / 3600000);
-                const tokenSymbol = b.token && b.token !== '0x0000000000000000000000000000000000000000' ? 'RLUSD' : 'XRP';
-                const tokenBadge = tokenSymbol === 'RLUSD' ? '💵' : '💎';
-                
-                return `
-                    <div class="bounty-card">
-                        <div class="bounty-header">
-                            <span class="bounty-id">#${b.id} ${tokenBadge}</span>
-                            <span class="bounty-status ${statusClass}">${statusMap[b.status]}</span>
-                        </div>
-                        <h3 class="bounty-title">${escapeHtml(b.title)}</h3>
-                        <p class="bounty-desc">${escapeHtml(b.description)}</p>
-                        <div class="bounty-price">
-                            <div>
-                                <div class="price-label">Current Price</div>
-                                <div class="price-current">${currentPrice.toFixed(2)} ${tokenSymbol}</div>
-                            </div>
-                            <div class="price-range">
-                                <div class="price-original">${startPrice.toFixed(1)} ${tokenSymbol}</div>
-                                <div class="price-end">Floor: ${endPrice.toFixed(1)} ${tokenSymbol}</div>
-                            </div>
-                        </div>
-                        <div class="bounty-meta">
-                            <span class="meta-item">⏱️ ${hoursLeft > 0 ? hoursLeft + 'h left' : 'Ended'}</span>
-                            <span class="meta-item">👤 ${b.poster.slice(0, 6)}...${b.poster.slice(-4)}</span>
-                        </div>
-                        <div class="bounty-actions">
-                            ${b.status === 0 ? `<button class="btn btn-success" onclick="claimBounty(${b.id})">🎯 Claim Bounty</button>` : ''}
-                            ${b.status === 1 && b.claimedBy.toLowerCase() === (userAddress || '').toLowerCase() ? `<button class="btn btn-primary" onclick="submitWork(${b.id})">📤 Submit Work</button>` : ''}
-                            <a href="https://explorer.xrplevm.org/address/${CONTRACT_ADDRESS}" target="_blank" class="btn btn-secondary">View</a>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function filterBounties(filter) {
-            currentFilter = filter;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            renderBounties();
         }
         
         function openCreateModal() {
-            if (!userAddress) {
-                showToast('Please connect wallet first', 'error');
-                return;
-            }
             document.getElementById('createModal').classList.add('show');
         }
         
@@ -961,122 +547,58 @@
             document.getElementById('createModal').classList.remove('show');
         }
         
-        async function createBounty(e) {
-            e.preventDefault();
-            
-            const title = document.getElementById('bountyTitle').value;
-            const desc = document.getElementById('bountyDesc').value;
-            const uri = document.getElementById('bountyUri').value || '';
-            const startPrice = document.getElementById('startPrice').value;
-            const endPrice = document.getElementById('endPrice').value;
-            const hours = document.getElementById('duration').value;
-            
-            if (parseFloat(endPrice) > parseFloat(startPrice)) {
-                showToast('End price must be less than start price', 'error');
+        function selectToken(token) {
+            selectedToken = token;
+            document.querySelectorAll('.token-btn').forEach(b => {
+                b.classList.toggle('active', b.textContent === token);
+            });
+        }
+        
+        function filterBounties(status) {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.toggle('active', b.textContent.toLowerCase().includes(status) || (status === 'all' && b.textContent === 'All'));
+            });
+            // In production, this would filter the bounty cards
+        }
+        
+        async function createBounty() {
+            if (!userAddress) {
+                connectWallet();
                 return;
             }
             
-            const btn = document.getElementById('createBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<div class="spinner"></div> Creating...';
+            const title = document.getElementById('bountyTitle').value;
+            const amount = document.getElementById('bountyAmount').value;
             
-            try {
-                const startWei = ethers.parseEther(startPrice);
-                const endWei = ethers.parseEther(endPrice);
-                const duration = parseInt(hours) * 3600;
-                
-                let tx;
-                if (selectedBountyToken === 'xrp') {
-                    tx = await contract.createBounty(
-                        title, desc, uri,
-                        startWei, endWei, duration,
-                        { value: startWei }
-                    );
-                } else {
-                    // RLUSD bounty - approve first
-                    btn.innerHTML = '<div class="spinner"></div> Approving RLUSD...';
-                    const allowance = await rlusd.allowance(userAddress, CONTRACT_ADDRESS);
-                    if (allowance < startWei) {
-                        const approveTx = await rlusd.approve(CONTRACT_ADDRESS, startWei);
-                        await approveTx.wait();
-                    }
-                    
-                    btn.innerHTML = '<div class="spinner"></div> Creating...';
-                    tx = await contract.createBountyERC20(
-                        RLUSD_ADDRESS, startWei,
-                        title, desc, uri,
-                        startWei, endWei, duration
-                    );
-                }
-                
-                btn.innerHTML = '<div class="spinner"></div> Confirming...';
-                await tx.wait();
-                
-                showToast(`Bounty created with ${selectedBountyToken.toUpperCase()}! 🎯`, 'success');
-                closeCreateModal();
-                loadBounties();
-                
-            } catch (err) {
-                console.error(err);
-                showToast('Failed: ' + (err.reason || err.message), 'error');
+            if (!title || !amount) {
+                showToast('Fill in all fields', 'error');
+                return;
             }
             
-            btn.disabled = false;
-            btn.innerHTML = '🚀 Post Bounty & Lock Escrow';
+            showToast('Bounty creation coming soon!');
+            closeCreateModal();
         }
         
         async function claimBounty(id) {
             if (!userAddress) {
-                showToast('Please connect wallet first', 'error');
+                connectWallet();
                 return;
             }
             
-            try {
-                const bounty = allBounties.find(b => b.id === id);
-                const tx = await contract.claimBounty(id, {
-                    value: bounty.currentPrice
-                });
-                showToast('Claiming bounty...', 'success');
-                await tx.wait();
-                showToast('Bounty claimed! 🎯', 'success');
-                loadBounties();
-            } catch (err) {
-                showToast('Failed: ' + (err.reason || err.message), 'error');
-            }
+            showToast('Bounty claiming coming soon!');
         }
         
-        async function submitWork(id) {
-            const uri = prompt('Enter submission link (IPFS, GitHub, etc):');
-            if (!uri) return;
-            
-            try {
-                const tx = await contract.submitWork(id, uri);
-                showToast('Submitting work...', 'success');
-                await tx.wait();
-                showToast('Work submitted! ✅', 'success');
-                loadBounties();
-            } catch (err) {
-                showToast('Failed: ' + (err.reason || err.message), 'error');
-            }
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            showToast('Copied!');
         }
         
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
-            document.getElementById('toastIcon').textContent = type === 'success' ? '✓' : '✗';
             document.getElementById('toastMsg').textContent = msg;
-            toast.className = 'toast ' + type + ' show';
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 2500);
         }
-        
-        // Init
-        loadBounties();
-        if (window.ethereum?.selectedAddress) connectWallet();
     </script>
 </body>
 </html>

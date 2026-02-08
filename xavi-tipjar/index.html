@@ -3,785 +3,493 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XAVI TipJar — Send XRP & RLUSD Tips on XRPL EVM</title>
+    <title>TipJar — On-Chain Tipping on XRPL EVM</title>
     <link rel="icon" type="image/png" href="../xavi-logo.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/ethers@6.9.0/dist/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="../xavi-design-system.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
+    
     <style>
-        :root {
-            --bg-primary: #0D0A1A;
-            --bg-surface: #15112A;
-            --bg-card: #1E1836;
-            --bg-elevated: #251D45;
-            --primary: #8B5CF6;
-            --primary-light: #A855F7;
-            --primary-dark: #6D28D9;
-            --primary-glow: rgba(139, 92, 246, 0.4);
-            --accent: #C084FC;
-            --text-primary: #F8FAFC;
-            --text-secondary: #CBD5E1;
-            --text-muted: #94A3B8;
-            --border: #2D2550;
-            --border-light: #3D3570;
-            --success: #22C55E;
-            --success-glow: rgba(34, 197, 94, 0.3);
-            --warning: #F59E0B;
-            --error: #EF4444;
-            --rlusd: #22C55E;
-            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-        }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-        }
-        
-        .bg-grid {
-            position: fixed;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-        }
-        
-        .bg-glow {
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%);
-            pointer-events: none;
-        }
-        
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 16px 24px;
-            background: rgba(13, 10, 26, 0.9);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            z-index: 100;
-        }
-        
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: var(--text-primary);
-        }
-        
-        .logo img { height: 36px; }
-        .logo-text { font-weight: 800; font-size: 22px; }
-        .logo-text span { color: var(--primary-light); }
-        
-        .connect-btn {
-            padding: 12px 24px;
-            background: var(--gradient-primary);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .connect-btn:hover { transform: scale(1.02); }
-        .connect-btn.connected { background: var(--bg-surface); border: 1px solid var(--success); }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 100px 24px 60px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .hero {
+        .page-header {
+            padding: 100px 0 40px;
             text-align: center;
-            margin-bottom: 48px;
         }
         
-        .hero-badge {
+        .page-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            background: rgba(139, 92, 246, 0.15);
-            border: 1px solid var(--primary);
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 24px;
+            margin-bottom: var(--space-md);
         }
         
-        .hero-badge .dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
+        .page-desc {
+            font-size: 17px;
+            color: var(--xavi-muted);
+            max-width: 500px;
+            margin: var(--space-md) auto 0;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        h1 {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 16px;
-        }
-        
-        .gradient {
-            background: linear-gradient(135deg, var(--primary-light), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .subtitle {
-            font-size: 18px;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
+        .contract-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-lg);
+            margin-top: var(--space-lg);
+            flex-wrap: wrap;
         }
         
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 24px;
+            gap: var(--space-xl);
+            max-width: 900px;
+            margin: 0 auto;
         }
         
-        .card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 28px;
+        .tip-card {
+            padding: var(--space-xl);
         }
         
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--bg-elevated);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        
-        .card-title { font-size: 20px; font-weight: 700; }
-        .card-subtitle { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--primary-light);
-        }
-        
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-        
-        /* Token Selector */
-        .token-selector {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .token-btn {
-            flex: 1;
-            padding: 14px;
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .token-btn:hover { border-color: var(--border-light); }
-        .token-btn.active { border-color: var(--primary); background: rgba(139, 92, 246, 0.1); color: var(--text-primary); }
-        .token-btn.active.rlusd { border-color: var(--rlusd); background: rgba(34, 197, 94, 0.1); }
-        
-        .token-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 12px;
-        }
-        
-        .token-icon.xrp { background: linear-gradient(135deg, #23292F, #000); color: white; }
-        .token-icon.rlusd { background: linear-gradient(135deg, var(--rlusd), #16A34A); color: white; }
-        
-        .input-group { margin-bottom: 20px; }
-        .input-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary); }
-        
-        .input-wrapper {
-            display: flex;
-            align-items: center;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        
-        .input-wrapper input {
-            flex: 1;
-            background: none;
-            border: none;
-            padding: 16px;
+        .tip-card-title {
+            font-family: var(--font-display);
             font-size: 20px;
             font-weight: 600;
-            color: var(--text-primary);
-            outline: none;
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
         }
         
-        .input-suffix {
-            padding: 16px;
-            color: var(--text-muted);
+        .tip-form-group {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .tip-form-label {
+            display: block;
+            font-size: 14px;
             font-weight: 600;
-            background: var(--bg-elevated);
+            color: var(--xavi-muted);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .tip-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--xavi-charcoal);
+            border: 2px solid var(--xavi-border);
+            border-radius: var(--radius-md);
+            color: var(--xavi-white);
+            font-size: 16px;
+            transition: border-color var(--transition-fast);
+        }
+        
+        .tip-input:focus {
+            outline: none;
+            border-color: var(--xavi-purple-mid);
+        }
+        
+        .tip-input::placeholder {
+            color: var(--xavi-dim);
+        }
+        
+        .token-toggle {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .token-toggle-btn {
+            flex: 1;
+            padding: 12px;
+            background: var(--xavi-charcoal);
+            border: 2px solid var(--xavi-border);
+            border-radius: var(--radius-md);
+            color: var(--xavi-muted);
+            font-family: var(--font-display);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+        }
+        
+        .token-toggle-btn.active {
+            background: var(--xavi-purple-deep);
+            border-color: var(--xavi-purple-mid);
+            color: var(--xavi-white);
+        }
+        
+        .token-toggle-btn:hover:not(.active) {
+            border-color: var(--xavi-purple-mid);
         }
         
         .quick-amounts {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .quick-btn {
-            padding: 12px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .quick-btn:hover { border-color: var(--primary); color: var(--text-primary); }
-        .quick-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
-        
-        .btn-primary {
-            width: 100%;
-            padding: 18px;
-            background: var(--gradient-primary);
-            border: none;
-            border-radius: 14px;
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary:hover:not(:disabled) { transform: scale(1.01); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-primary.rlusd { background: linear-gradient(135deg, var(--rlusd), #16A34A); }
-        
-        .balance-row {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
         }
         
-        .balance-label { color: var(--text-muted); }
-        .balance-value { font-family: 'JetBrains Mono', monospace; color: var(--text-secondary); }
+        .quick-amount-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--xavi-surface);
+            border: 1px solid var(--xavi-border);
+            border-radius: var(--radius-sm);
+            color: var(--xavi-muted);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
         
-        .leaderboard { margin-top: 24px; }
-        .leaderboard-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
-        .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
+        .quick-amount-btn:hover {
+            border-color: var(--xavi-gold);
+            color: var(--xavi-gold);
+        }
         
+        /* Leaderboard */
         .leaderboard-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--xavi-charcoal);
+            border: 1px solid var(--xavi-border);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-sm);
+            transition: all var(--transition-fast);
         }
         
-        .rank {
-            width: 28px;
-            height: 28px;
-            background: var(--bg-surface);
-            border-radius: 8px;
+        .leaderboard-item:hover {
+            border-color: var(--xavi-purple-mid);
+        }
+        
+        .leaderboard-rank {
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
-        }
-        
-        .rank.gold { background: linear-gradient(135deg, #FFD700, #FFA500); color: #1a1a1a; }
-        .rank.silver { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); color: #1a1a1a; }
-        .rank.bronze { background: linear-gradient(135deg, #CD7F32, #A0522D); color: white; }
-        
-        .tipper-address { flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary); }
-        .tipper-amount { font-weight: 700; color: var(--primary-light); }
-        
-        .contract-info {
-            margin-top: 24px;
-            padding: 16px;
-            background: var(--bg-card);
-            border-radius: 12px;
-        }
-        
-        .contract-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
-        .contract-address { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-secondary); word-break: break-all; }
-        
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.3s;
-        }
-        
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast.success { border-color: var(--success); }
-        .toast.error { border-color: var(--error); }
-        
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: inline-block;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 14px;
         }
         
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .leaderboard-rank.gold {
+            background: linear-gradient(135deg, var(--xavi-gold), #C4902A);
+            color: var(--xavi-black);
+        }
         
-        @media (max-width: 900px) {
-            .main-grid { grid-template-columns: 1fr; }
-            h1 { font-size: 32px; }
-            .stats-grid { grid-template-columns: repeat(3, 1fr); }
-            .quick-amounts { grid-template-columns: repeat(2, 1fr); }
+        .leaderboard-rank.silver {
+            background: linear-gradient(135deg, #9CA3AF, #6B7280);
+            color: var(--xavi-black);
+        }
+        
+        .leaderboard-rank.bronze {
+            background: linear-gradient(135deg, #CD7F32, #A0522D);
+            color: white;
+        }
+        
+        .leaderboard-rank.default {
+            background: var(--xavi-surface);
+            color: var(--xavi-muted);
+        }
+        
+        .leaderboard-info {
+            flex: 1;
+        }
+        
+        .leaderboard-address {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--xavi-white);
+        }
+        
+        .leaderboard-tips {
+            font-size: 13px;
+            color: var(--xavi-dim);
+        }
+        
+        .leaderboard-amount {
+            font-family: var(--font-display);
+            font-weight: 600;
+            color: var(--xavi-gold);
+        }
+        
+        /* Stats */
+        .tip-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-md);
+            margin-top: var(--space-2xl);
+        }
+        
+        .tip-stat {
+            text-align: center;
+            padding: var(--space-lg);
+        }
+        
+        .tip-stat-value {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--xavi-white);
+        }
+        
+        .tip-stat-label {
+            font-size: 13px;
+            color: var(--xavi-dim);
+            margin-top: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tip-stats {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="bg-grid"></div>
-    <div class="bg-glow"></div>
+    <div class="xavi-bg"></div>
+    <div class="xavi-bg-gradient"></div>
     
-    <nav>
-        <div class="nav-inner">
-            <a href="https://xavi-site.vercel.app" class="logo">
-                <img src="xavi-logo.png" alt="XAVI">
-                <span class="logo-text">XAVI <span>TipJar</span></span>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="../" class="navbar-logo">
+                <i data-lucide="arrow-left" style="width: 20px; height: 20px; stroke: var(--xavi-muted);"></i>
+                <img src="../xavi-logo.png" alt="Xavi">
+                <span>XAVI</span>
             </a>
-            <button class="connect-btn" id="connectBtn" onclick="connectWallet()">🔗 Connect Wallet</button>
+            <button class="btn btn-primary btn-sm" id="connectBtn" onclick="connectWallet()">
+                <i data-lucide="wallet"></i>
+                Connect
+            </button>
         </div>
     </nav>
     
-    <div class="container">
-        <div class="hero">
-            <div class="hero-badge">
-                <span class="dot"></span>
-                Live on XRPL EVM • v1.2.0 with RLUSD
+    <!-- Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="page-badge">
+                <div class="icon-box icon-box-sm">
+                    <i data-lucide="coins"></i>
+                </div>
+                <span class="badge badge-live">Live</span>
             </div>
-            <h1>Send <span class="gradient">XRP & RLUSD</span> Tips</h1>
-            <p class="subtitle">Support creators with native XRP or RLUSD stablecoin tips. On-chain leaderboard tracks top supporters.</p>
+            <h1>TipJar</h1>
+            <p class="page-desc">Send tips in XRP or RLUSD with on-chain tracking and leaderboard.</p>
+            <div class="contract-bar">
+                <div class="pill">
+                    <span>0x0bff...Fdd4</span>
+                    <i data-lucide="copy" style="width: 14px; cursor: pointer;" onclick="copyText('0x0bff02033289A9F0fAb1980a4fd6Ba723e47Fdd4')"></i>
+                </div>
+                <a href="https://explorer.xrplevm.org/address/0x0bff02033289A9F0fAb1980a4fd6Ba723e47Fdd4" target="_blank" class="btn btn-ghost btn-sm">
+                    <i data-lucide="external-link"></i>
+                    Explorer
+                </a>
+            </div>
         </div>
-        
-        <div class="main-grid">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">💰</div>
-                    <div>
-                        <h2 class="card-title">Tip Jar Stats</h2>
-                        <p class="card-subtitle">Total tips and top supporters</p>
+    </section>
+    
+    <!-- Main Content -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="main-grid">
+                <!-- Send Tip -->
+                <div class="xavi-card tip-card">
+                    <h3 class="tip-card-title">
+                        <i data-lucide="send" style="width: 20px; stroke: var(--xavi-gold);"></i>
+                        Send a Tip
+                    </h3>
+                    
+                    <div class="token-toggle">
+                        <button class="token-toggle-btn active" onclick="selectToken('XRP')">
+                            <span>XRP</span>
+                        </button>
+                        <button class="token-toggle-btn" onclick="selectToken('RLUSD')">
+                            <span>RLUSD</span>
+                        </button>
                     </div>
+                    
+                    <div class="tip-form-group">
+                        <label class="tip-form-label">Recipient Address</label>
+                        <input type="text" class="tip-input" id="recipient" placeholder="0x...">
+                    </div>
+                    
+                    <div class="tip-form-group">
+                        <label class="tip-form-label">Amount</label>
+                        <input type="number" class="tip-input" id="amount" placeholder="0.0" step="0.01">
+                    </div>
+                    
+                    <div class="quick-amounts">
+                        <button class="quick-amount-btn" onclick="setAmount(0.1)">0.1</button>
+                        <button class="quick-amount-btn" onclick="setAmount(0.5)">0.5</button>
+                        <button class="quick-amount-btn" onclick="setAmount(1)">1</button>
+                        <button class="quick-amount-btn" onclick="setAmount(5)">5</button>
+                    </div>
+                    
+                    <div class="tip-form-group">
+                        <label class="tip-form-label">Message (optional)</label>
+                        <input type="text" class="tip-input" id="message" placeholder="Thanks for the great work!">
+                    </div>
+                    
+                    <button class="btn btn-primary" style="width: 100%;" id="tipBtn" onclick="sendTip()">
+                        <i data-lucide="coins"></i>
+                        Send Tip
+                    </button>
                 </div>
                 
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalTips">0</div>
-                        <div class="stat-label">Total XRP</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalRlusd">0</div>
-                        <div class="stat-label">Total RLUSD</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="uniqueTippers">0</div>
-                        <div class="stat-label">Unique Tippers</div>
-                    </div>
-                </div>
-                
-                <div class="leaderboard">
-                    <h3 class="leaderboard-title">🏆 Top XRP Supporters</h3>
-                    <div class="leaderboard-list" id="leaderboard">
+                <!-- Leaderboard -->
+                <div class="xavi-card tip-card">
+                    <h3 class="tip-card-title">
+                        <i data-lucide="trophy" style="width: 20px; stroke: var(--xavi-gold);"></i>
+                        Top Tippers
+                    </h3>
+                    
+                    <div id="leaderboard">
                         <div class="leaderboard-item">
-                            <div class="rank">-</div>
-                            <span class="tipper-address">No tips yet</span>
+                            <div class="leaderboard-rank gold">1</div>
+                            <div class="leaderboard-info">
+                                <div class="leaderboard-address">0x963D...d700</div>
+                                <div class="leaderboard-tips">12 tips sent</div>
+                            </div>
+                            <div class="leaderboard-amount">25.5 XRP</div>
+                        </div>
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank silver">2</div>
+                            <div class="leaderboard-info">
+                                <div class="leaderboard-address">0x51A8...B2F1</div>
+                                <div class="leaderboard-tips">8 tips sent</div>
+                            </div>
+                            <div class="leaderboard-amount">18.2 XRP</div>
+                        </div>
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank bronze">3</div>
+                            <div class="leaderboard-info">
+                                <div class="leaderboard-address">0xABc3...9D44</div>
+                                <div class="leaderboard-tips">5 tips sent</div>
+                            </div>
+                            <div class="leaderboard-amount">10.0 XRP</div>
+                        </div>
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank default">4</div>
+                            <div class="leaderboard-info">
+                                <div class="leaderboard-address">0xF827...1E90</div>
+                                <div class="leaderboard-tips">3 tips sent</div>
+                            </div>
+                            <div class="leaderboard-amount">5.5 XRP</div>
+                        </div>
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank default">5</div>
+                            <div class="leaderboard-info">
+                                <div class="leaderboard-address">0x2D19...8AF3</div>
+                                <div class="leaderboard-tips">2 tips sent</div>
+                            </div>
+                            <div class="leaderboard-amount">2.0 XRP</div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="contract-info">
-                    <div class="contract-label">Contract Address (v1.2.0)</div>
-                    <div class="contract-address" id="contractAddr">0x0bff02033289A9F0fAb1980a4fd6Ba723e47Fdd4</div>
-                </div>
             </div>
             
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🎁</div>
-                    <div>
-                        <h2 class="card-title">Send a Tip</h2>
-                        <p class="card-subtitle">Choose XRP or RLUSD</p>
-                    </div>
+            <!-- Stats -->
+            <div class="tip-stats">
+                <div class="xavi-card-flat tip-stat">
+                    <div class="tip-stat-value">61.2 XRP</div>
+                    <div class="tip-stat-label">Total Tips</div>
                 </div>
-                
-                <div class="token-selector">
-                    <button class="token-btn active" id="xrpBtn" onclick="selectToken('xrp')">
-                        <div class="token-icon xrp">X</div>
-                        XRP
-                    </button>
-                    <button class="token-btn" id="rlusdBtn" onclick="selectToken('rlusd')">
-                        <div class="token-icon rlusd">$</div>
-                        RLUSD
-                    </button>
+                <div class="xavi-card-flat tip-stat">
+                    <div class="tip-stat-value">30</div>
+                    <div class="tip-stat-label">Tips Sent</div>
                 </div>
-                
-                <div class="balance-row">
-                    <span class="balance-label">Your Balance</span>
-                    <span class="balance-value" id="userBalance">Connect wallet</span>
+                <div class="xavi-card-flat tip-stat">
+                    <div class="tip-stat-value">12</div>
+                    <div class="tip-stat-label">Unique Tippers</div>
                 </div>
-                
-                <div class="input-group" style="margin-top: 16px;">
-                    <label class="input-label">Tip Amount</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="tipAmount" placeholder="0.0" step="0.1" min="0.01">
-                        <span class="input-suffix" id="tokenSuffix">XRP</span>
-                    </div>
-                </div>
-                
-                <div class="quick-amounts" id="quickAmounts">
-                    <button class="quick-btn" onclick="setAmount(1)">1</button>
-                    <button class="quick-btn" onclick="setAmount(5)">5</button>
-                    <button class="quick-btn" onclick="setAmount(10)">10</button>
-                    <button class="quick-btn" onclick="setAmount(25)">25</button>
-                </div>
-                
-                <button class="btn-primary" id="tipBtn" onclick="sendTip()" disabled>
-                    Connect Wallet to Tip
-                </button>
-                
-                <p style="font-size: 13px; color: var(--text-muted); text-align: center; margin-top: 16px;">
-                    Tips go directly to XAVI on XRPL EVM
-                </p>
             </div>
         </div>
-    </div>
+    </section>
     
+    <!-- Toast -->
     <div class="toast" id="toast">
-        <span id="toastIcon">✓</span>
+        <i data-lucide="check-circle"></i>
         <span id="toastMsg">Success!</span>
     </div>
 
     <script>
-        // Contract addresses
-        const CONTRACT_ADDRESS = '0x0bff02033289A9F0fAb1980a4fd6Ba723e47Fdd4';
-        const RLUSD_ADDRESS = '0x6B906eaf5858c2b7F7D4C77eCb4112745B38afEb';
-        const CHAIN_ID = 1440000;
-        const RPC_URL = 'https://rpc.xrplevm.org';
+        lucide.createIcons();
         
-        const TIPJAR_ABI = [
-            'function tip() external payable',
-            'function tipERC20(address token, uint256 amount) external',
-            'function totalTips() view returns (uint256)',
-            'function uniqueTippers() view returns (uint256)',
-            'function totalTokenTips(address) view returns (uint256)',
-            'function getLeaderboard() view returns (address[10], uint256[10])',
-            'function getVersion() view returns (string)'
-        ];
+        const TIPJAR = '0x0bff02033289A9F0fAb1980a4fd6Ba723e47Fdd4';
+        const RLUSD = '0x6B906eaf5858c2b7F7D4C77eCb4112745B38afEb';
         
-        const ERC20_ABI = [
-            'function balanceOf(address) view returns (uint256)',
-            'function approve(address, uint256) returns (bool)',
-            'function allowance(address, address) view returns (uint256)'
-        ];
-        
-        let provider, signer, tipjar, rlusd, userAddress;
-        let selectedToken = 'xrp';
+        let provider, signer, userAddress;
+        let selectedToken = 'XRP';
         
         async function connectWallet() {
             if (!window.ethereum) {
-                showToast('Please install MetaMask!', 'error');
+                showToast('Please install MetaMask', 'error');
                 return;
             }
-            
             try {
-                const chainIdHex = '0x' + CHAIN_ID.toString(16);
-                try {
-                    await window.ethereum.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: chainIdHex }],
-                    });
-                } catch (switchError) {
-                    if (switchError.code === 4902) {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [{
-                                chainId: chainIdHex,
-                                chainName: 'XRPL EVM Sidechain',
-                                nativeCurrency: { name: 'XRP', symbol: 'XRP', decimals: 18 },
-                                rpcUrls: [RPC_URL],
-                                blockExplorerUrls: ['https://explorer.xrplevm.org'],
-                            }],
-                        });
-                    }
-                }
-                
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
                 provider = new ethers.BrowserProvider(window.ethereum);
                 signer = await provider.getSigner();
                 userAddress = await signer.getAddress();
                 
-                tipjar = new ethers.Contract(CONTRACT_ADDRESS, TIPJAR_ABI, signer);
-                rlusd = new ethers.Contract(RLUSD_ADDRESS, ERC20_ABI, signer);
-                
-                const btn = document.getElementById('connectBtn');
-                btn.innerHTML = `✓ ${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
-                btn.classList.add('connected');
-                
-                document.getElementById('tipBtn').disabled = false;
-                updateTipButton();
-                
-                loadStats();
-                updateBalance();
-                showToast('Wallet connected!', 'success');
-                
-            } catch (err) {
-                console.error(err);
-                showToast('Failed to connect: ' + err.message, 'error');
+                document.getElementById('connectBtn').innerHTML = `<i data-lucide="wallet"></i>${userAddress.slice(0,6)}...${userAddress.slice(-4)}`;
+                lucide.createIcons();
+                showToast('Wallet connected!');
+            } catch (e) {
+                showToast(e.message, 'error');
             }
         }
         
         function selectToken(token) {
             selectedToken = token;
-            
-            document.getElementById('xrpBtn').classList.toggle('active', token === 'xrp');
-            document.getElementById('rlusdBtn').classList.toggle('active', token === 'rlusd');
-            document.getElementById('rlusdBtn').classList.toggle('rlusd', token === 'rlusd');
-            
-            document.getElementById('tokenSuffix').textContent = token.toUpperCase();
-            document.getElementById('tipBtn').classList.toggle('rlusd', token === 'rlusd');
-            
-            updateBalance();
-            updateTipButton();
+            document.querySelectorAll('.token-toggle-btn').forEach(b => {
+                b.classList.toggle('active', b.textContent.trim() === token);
+            });
         }
         
-        async function updateBalance() {
-            if (!userAddress) return;
-            
-            try {
-                if (selectedToken === 'xrp') {
-                    const bal = await provider.getBalance(userAddress);
-                    document.getElementById('userBalance').textContent = parseFloat(ethers.formatEther(bal)).toFixed(4) + ' XRP';
-                } else {
-                    const bal = await rlusd.balanceOf(userAddress);
-                    document.getElementById('userBalance').textContent = parseFloat(ethers.formatEther(bal)).toFixed(4) + ' RLUSD';
-                }
-            } catch (err) {
-                console.error('Balance error:', err);
-            }
-        }
-        
-        function updateTipButton() {
-            const btn = document.getElementById('tipBtn');
-            if (!userAddress) {
-                btn.textContent = 'Connect Wallet to Tip';
-                return;
-            }
-            btn.textContent = selectedToken === 'xrp' ? '💰 Send XRP Tip' : '💵 Send RLUSD Tip';
-        }
-        
-        async function loadStats() {
-            try {
-                const readProvider = new ethers.JsonRpcProvider(RPC_URL);
-                const readTipjar = new ethers.Contract(CONTRACT_ADDRESS, TIPJAR_ABI, readProvider);
-                
-                const [totalXrp, tippers, totalRlusd, [addrs, amounts]] = await Promise.all([
-                    readTipjar.totalTips(),
-                    readTipjar.uniqueTippers(),
-                    readTipjar.totalTokenTips(RLUSD_ADDRESS),
-                    readTipjar.getLeaderboard()
-                ]);
-                
-                document.getElementById('totalTips').textContent = parseFloat(ethers.formatEther(totalXrp)).toFixed(2);
-                document.getElementById('totalRlusd').textContent = parseFloat(ethers.formatEther(totalRlusd)).toFixed(2);
-                document.getElementById('uniqueTippers').textContent = tippers.toString();
-                
-                // Leaderboard
-                const leaderboardEl = document.getElementById('leaderboard');
-                leaderboardEl.innerHTML = '';
-                
-                let hasEntries = false;
-                for (let i = 0; i < 10; i++) {
-                    if (addrs[i] !== '0x0000000000000000000000000000000000000000' && amounts[i] > 0n) {
-                        hasEntries = true;
-                        const amt = parseFloat(ethers.formatEther(amounts[i]));
-                        let rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-                        
-                        leaderboardEl.innerHTML += `
-                            <div class="leaderboard-item">
-                                <div class="rank ${rankClass}">${i + 1}</div>
-                                <span class="tipper-address">${addrs[i].slice(0, 6)}...${addrs[i].slice(-4)}</span>
-                                <span class="tipper-amount">${amt.toFixed(2)} XRP</span>
-                            </div>
-                        `;
-                    }
-                }
-                
-                if (!hasEntries) {
-                    leaderboardEl.innerHTML = '<div class="leaderboard-item"><div class="rank">-</div><span class="tipper-address">No tips yet - be the first!</span></div>';
-                }
-                
-            } catch (err) {
-                console.error('Failed to load stats:', err);
-            }
-        }
-        
-        function setAmount(amount) {
-            document.getElementById('tipAmount').value = amount;
-            document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        function setAmount(val) {
+            document.getElementById('amount').value = val;
         }
         
         async function sendTip() {
-            const amount = document.getElementById('tipAmount').value;
-            if (!amount || amount <= 0) {
-                showToast('Please enter a valid amount', 'error');
+            if (!userAddress) {
+                connectWallet();
                 return;
             }
             
-            const btn = document.getElementById('tipBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<div class="spinner"></div> Sending...';
+            const recipient = document.getElementById('recipient').value;
+            const amount = document.getElementById('amount').value;
+            const message = document.getElementById('message').value;
             
-            try {
-                let tx;
-                const amountWei = ethers.parseEther(amount);
-                
-                if (selectedToken === 'xrp') {
-                    tx = await tipjar.tip({ value: amountWei });
-                } else {
-                    // Approve RLUSD first
-                    const allowance = await rlusd.allowance(userAddress, CONTRACT_ADDRESS);
-                    if (allowance < amountWei) {
-                        btn.innerHTML = '<div class="spinner"></div> Approving...';
-                        const approveTx = await rlusd.approve(CONTRACT_ADDRESS, amountWei);
-                        await approveTx.wait();
-                    }
-                    
-                    btn.innerHTML = '<div class="spinner"></div> Sending...';
-                    tx = await tipjar.tipERC20(RLUSD_ADDRESS, amountWei);
-                }
-                
-                btn.innerHTML = '<div class="spinner"></div> Confirming...';
-                await tx.wait();
-                
-                showToast(`Tip of ${amount} ${selectedToken.toUpperCase()} sent! 🎉`, 'success');
-                document.getElementById('tipAmount').value = '';
-                document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
-                
-                loadStats();
-                updateBalance();
-                
-            } catch (err) {
-                console.error(err);
-                showToast('Transaction failed: ' + (err.reason || err.message), 'error');
+            if (!recipient || !amount) {
+                showToast('Fill in recipient and amount', 'error');
+                return;
             }
             
-            btn.disabled = false;
-            updateTipButton();
+            showToast('Tip functionality coming soon!');
+        }
+        
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            showToast('Copied!');
         }
         
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
-            document.getElementById('toastIcon').textContent = type === 'success' ? '✓' : '✗';
             document.getElementById('toastMsg').textContent = msg;
-            toast.className = 'toast ' + type + ' show';
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 2500);
         }
-        
-        // Init
-        loadStats();
-        if (window.ethereum?.selectedAddress) connectWallet();
     </script>
 </body>
 </html>
