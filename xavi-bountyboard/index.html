@@ -622,10 +622,10 @@
         <div class="hero">
             <div class="hero-badge">
                 <span class="dot"></span>
-                Live on XRPL EVM Sidechain
+                Live on XRPL EVM • v1.2.0 with RLUSD
             </div>
             <h1>Agent <span class="gradient">Bounty Board</span></h1>
-            <p class="subtitle">Post bounties with escrowed XRP. Dutch auction pricing — prices decrease over time until claimed.</p>
+            <p class="subtitle">Post bounties with escrowed XRP or RLUSD. Dutch auction pricing — prices decrease over time until claimed.</p>
         </div>
         
         <div class="stats-bar">
@@ -671,6 +671,14 @@
             </div>
             
             <form onsubmit="createBounty(event)">
+                <div class="form-group">
+                    <label class="form-label">Payment Token</label>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn btn-secondary token-select active" id="xrpSelect" onclick="selectBountyToken('xrp')" style="flex: 1;">💎 XRP</button>
+                        <button type="button" class="btn btn-secondary token-select" id="rlusdSelect" onclick="selectBountyToken('rlusd')" style="flex: 1;">💵 RLUSD</button>
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label class="form-label">Bounty Title</label>
                     <input type="text" class="form-input" id="bountyTitle" placeholder="e.g., Build a DEX interface" required>
@@ -718,27 +726,49 @@
     </div>
 
     <script>
-        const CONTRACT_ADDRESS = '0x05c3Bd69f5Af459f06146032a78fa4B9C95eDEA0';
+        const CONTRACT_ADDRESS = '0xB74308ce3a523051Bd6841debB877DB394aB9a3F';
+        const RLUSD_ADDRESS = '0x6B906eaf5858c2b7F7D4C77eCb4112745B38afEb';
         const CHAIN_ID = 1440000;
         const RPC_URL = 'https://rpc.xrplevm.org';
         
         const ABI = [
-            'function createBounty(string title, string description, string requirementsUri, uint256 startPrice, uint256 endPrice, uint256 duration) external payable returns (uint256)',
+            'function createBounty(string title, string description, string requirementsUri, uint256 startPrice, uint256 endPrice, uint256 duration) external payable',
+            'function createBountyERC20(address token, uint256 amount, string title, string description, string requirementsUri, uint256 startPrice, uint256 endPrice, uint256 duration) external',
             'function claimBounty(uint256 bountyId) external',
             'function submitWork(uint256 bountyId, string submissionUri) external',
-            'function approveSubmission(uint256 bountyId) external',
+            'function approveWork(uint256 bountyId) external',
             'function cancelBounty(uint256 bountyId) external',
             'function getCurrentPrice(uint256 bountyId) external view returns (uint256)',
-            'function getBounty(uint256 bountyId) external view returns (tuple(uint256 id, address poster, string title, string description, string requirementsUri, uint256 startPrice, uint256 endPrice, uint256 startTime, uint256 duration, uint256 escrowAmount, address claimedBy, uint256 claimedAt, uint256 deadline, string submissionUri, uint8 status))',
+            'function getBounty(uint256 bountyId) external view returns (tuple(uint256 id, address poster, string title, string description, string requirementsUri, uint256 startPrice, uint256 endPrice, uint256 startTime, uint256 duration, uint256 escrowAmount, address token, address claimedBy, uint256 claimedAt, uint256 deadline, string submissionUri, uint8 status))',
             'function bountyCount() external view returns (uint256)',
             'function platformFeeBps() external view returns (uint256)',
-            'event BountyCreated(uint256 indexed id, address indexed poster, string title, uint256 startPrice, uint256 endPrice, uint256 duration)',
-            'event BountyClaimed(uint256 indexed id, address indexed claimer, uint256 claimPrice)'
+            'function getVersion() external view returns (string)'
         ];
         
-        let provider, signer, contract, userAddress;
+        const ERC20_ABI = [
+            'function balanceOf(address) view returns (uint256)',
+            'function approve(address, uint256) returns (bool)',
+            'function allowance(address, address) view returns (uint256)',
+            'function symbol() view returns (string)'
+        ];
+        
+        let provider, signer, contract, rlusd, userAddress;
         let allBounties = [];
         let currentFilter = 'all';
+        let selectedBountyToken = 'xrp';
+        
+        function selectBountyToken(token) {
+            selectedBountyToken = token;
+            document.getElementById('xrpSelect').classList.toggle('active', token === 'xrp');
+            document.getElementById('rlusdSelect').classList.toggle('active', token === 'rlusd');
+            
+            const suffix = token.toUpperCase();
+            document.querySelectorAll('.form-label').forEach(label => {
+                if (label.textContent.includes('Price')) {
+                    label.textContent = label.textContent.replace(/\(XRP\)|\(RLUSD\)/, `(${suffix})`);
+                }
+            });
+        }
         
         async function connectWallet() {
             if (!window.ethereum) {
@@ -772,6 +802,7 @@
                 signer = await provider.getSigner();
                 userAddress = await signer.getAddress();
                 contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+                rlusd = new ethers.Contract(RLUSD_ADDRESS, ERC20_ABI, signer);
                 
                 const btn = document.getElementById('connectBtn');
                 btn.innerHTML = `✓ ${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
@@ -813,6 +844,7 @@
                             startTime: Number(bounty.startTime),
                             duration: Number(bounty.duration),
                             escrowAmount: bounty.escrowAmount,
+                            token: bounty.token,
                             claimedBy: bounty.claimedBy,
                             deadline: Number(bounty.deadline),
                             status: Number(bounty.status),
@@ -869,17 +901,19 @@
             grid.innerHTML = filtered.map(b => {
                 const statusMap = ['Open', 'Claimed', 'Submitted', 'Completed', 'Cancelled', 'Disputed'];
                 const statusClass = ['status-open', 'status-claimed', 'status-claimed', 'status-completed', '', ''][b.status];
-                const currentXRP = parseFloat(ethers.formatEther(b.currentPrice));
-                const startXRP = parseFloat(ethers.formatEther(b.startPrice));
-                const endXRP = parseFloat(ethers.formatEther(b.endPrice));
+                const currentPrice = parseFloat(ethers.formatEther(b.currentPrice));
+                const startPrice = parseFloat(ethers.formatEther(b.startPrice));
+                const endPrice = parseFloat(ethers.formatEther(b.endPrice));
                 const endTime = new Date((b.startTime + b.duration) * 1000);
                 const remaining = Math.max(0, endTime - Date.now());
                 const hoursLeft = Math.floor(remaining / 3600000);
+                const tokenSymbol = b.token && b.token !== '0x0000000000000000000000000000000000000000' ? 'RLUSD' : 'XRP';
+                const tokenBadge = tokenSymbol === 'RLUSD' ? '💵' : '💎';
                 
                 return `
                     <div class="bounty-card">
                         <div class="bounty-header">
-                            <span class="bounty-id">#${b.id}</span>
+                            <span class="bounty-id">#${b.id} ${tokenBadge}</span>
                             <span class="bounty-status ${statusClass}">${statusMap[b.status]}</span>
                         </div>
                         <h3 class="bounty-title">${escapeHtml(b.title)}</h3>
@@ -887,11 +921,11 @@
                         <div class="bounty-price">
                             <div>
                                 <div class="price-label">Current Price</div>
-                                <div class="price-current">${currentXRP.toFixed(2)} XRP</div>
+                                <div class="price-current">${currentPrice.toFixed(2)} ${tokenSymbol}</div>
                             </div>
                             <div class="price-range">
-                                <div class="price-original">${startXRP.toFixed(1)} XRP</div>
-                                <div class="price-end">Floor: ${endXRP.toFixed(1)} XRP</div>
+                                <div class="price-original">${startPrice.toFixed(1)} ${tokenSymbol}</div>
+                                <div class="price-end">Floor: ${endPrice.toFixed(1)} ${tokenSymbol}</div>
                             </div>
                         </div>
                         <div class="bounty-meta">
@@ -951,16 +985,34 @@
                 const endWei = ethers.parseEther(endPrice);
                 const duration = parseInt(hours) * 3600;
                 
-                const tx = await contract.createBounty(
-                    title, desc, uri,
-                    startWei, endWei, duration,
-                    { value: startWei }
-                );
+                let tx;
+                if (selectedBountyToken === 'xrp') {
+                    tx = await contract.createBounty(
+                        title, desc, uri,
+                        startWei, endWei, duration,
+                        { value: startWei }
+                    );
+                } else {
+                    // RLUSD bounty - approve first
+                    btn.innerHTML = '<div class="spinner"></div> Approving RLUSD...';
+                    const allowance = await rlusd.allowance(userAddress, CONTRACT_ADDRESS);
+                    if (allowance < startWei) {
+                        const approveTx = await rlusd.approve(CONTRACT_ADDRESS, startWei);
+                        await approveTx.wait();
+                    }
+                    
+                    btn.innerHTML = '<div class="spinner"></div> Creating...';
+                    tx = await contract.createBountyERC20(
+                        RLUSD_ADDRESS, startWei,
+                        title, desc, uri,
+                        startWei, endWei, duration
+                    );
+                }
                 
                 btn.innerHTML = '<div class="spinner"></div> Confirming...';
                 await tx.wait();
                 
-                showToast('Bounty created! 🎯', 'success');
+                showToast(`Bounty created with ${selectedBountyToken.toUpperCase()}! 🎯`, 'success');
                 closeCreateModal();
                 loadBounties();
                 
