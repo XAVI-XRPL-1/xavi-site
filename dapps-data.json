@@ -1,0 +1,207 @@
+{
+  "stats": {
+    "totalDapps": 12,
+    "totalContracts": 22,
+    "chainsLive": 2,
+    "openSource": "100%"
+  },
+  "categories": ["All", "Infrastructure", "DeFi", "Services", "Cross-Chain"],
+  "dapps": [
+    {
+      "id": "erc-8004",
+      "name": "ERC-8004 Identity",
+      "category": "Infrastructure",
+      "description": "First ERC-8004 implementation on a non-Ethereum chain. On-chain identity registry for AI agents and humans.",
+      "accent": "#F5A623",
+      "accentRgb": "245, 166, 35",
+      "icon": "shield-check",
+      "badge": { "type": "featured", "text": "FEATURED" },
+      "stats": [
+        { "label": "Identities", "value": "23" },
+        { "label": "Status", "value": "First on XRPL ✓" }
+      ],
+      "cta": "Register Identity",
+      "github": "https://github.com/XAVI-XRPL/xavi-identity",
+      "contractAddress": "0x54A1b3F2D71e3aC47E3C5A51655c6a15b4A962Dc"
+    },
+    {
+      "id": "xavi-launchpad",
+      "name": "XaviLaunchpad",
+      "category": "Infrastructure",
+      "description": "Deploy an AI agent in one transaction. Wallet, identity, and security audit — all at once.",
+      "accent": "#27AE60",
+      "accentRgb": "39, 174, 96",
+      "icon": "rocket",
+      "badge": { "type": "featured", "text": "FEATURED" },
+      "stats": [
+        { "label": "Agents Launched", "value": "6" },
+        { "label": "Includes", "value": "Wallet + ID + Audit" }
+      ],
+      "cta": "Deploy Agent",
+      "github": "https://github.com/XAVI-XRPL/xavi-launchpad",
+      "contractAddress": "0x8A0f3dB41731195E8C60A88d0972450948F7a542"
+    },
+    {
+      "id": "xavi-wallet",
+      "name": "XaviWallet",
+      "category": "Infrastructure",
+      "description": "Smart contract wallet with guardian controls, session keys, and daily spending limits. Built for agents and humans.",
+      "accent": "#00BCD4",
+      "accentRgb": "0, 188, 212",
+      "icon": "wallet",
+      "badge": { "type": "live", "text": "LIVE" },
+      "stats": [
+        { "label": "Active Wallets", "value": "3" },
+        { "label": "Model", "value": "Guardian + Operator" }
+      ],
+      "cta": "Create Wallet",
+      "github": "https://github.com/XAVI-XRPL/xavi-wallet"
+    },
+    {
+      "id": "crossledger",
+      "name": "CrossLedger",
+      "category": "Cross-Chain",
+      "description": "Bridge identities between XRPL native ledger and XRPL EVM. Unified identity across both layers.",
+      "accent": "#8BC34A",
+      "accentRgb": "139, 195, 74",
+      "icon": "link-2",
+      "badge": { "type": "live", "text": "LIVE" },
+      "stats": [
+        { "label": "Bridges", "value": "XRPL ↔ EVM" },
+        { "label": "Status", "value": "Identity Sync Active" }
+      ],
+      "cta": "Bridge Identity",
+      "github": "https://github.com/XAVI-XRPL/xavi-crossledger"
+    },
+    {
+      "id": "xaviswap",
+      "name": "XaviSwap DEX",
+      "category": "DeFi",
+      "description": "Uniswap V2-style AMM on XRPL EVM. 0.05% swap fee. XRP/RLUSD pair ready for liquidity.",
+      "accent": "#3498DB",
+      "accentRgb": "52, 152, 219",
+      "icon": "arrow-left-right",
+      "badge": { "type": "deployed", "text": "DEPLOYED" },
+      "stats": [
+        { "label": "Pairs", "value": "XRP/RLUSD" },
+        { "label": "TVL", "value": "—" }
+      ],
+      "cta": "Swap Tokens",
+      "github": "https://github.com/XAVI-XRPL/xaviswap",
+      "contractAddress": "0xf3829D62B24Ed8f43d1a4F25f5c14b3f41D794E8"
+    },
+    {
+      "id": "predictions",
+      "name": "Prediction Markets",
+      "category": "DeFi",
+      "description": "Bet on XRPL, AI, and crypto outcomes. Constant-product AMM pricing. 10 curated markets live now.",
+      "accent": "#9B59B6",
+      "accentRgb": "155, 89, 182",
+      "icon": "bar-chart-3",
+      "badge": { "type": "custom", "text": "10 MARKETS" },
+      "stats": [
+        { "label": "Active Markets", "value": "10" },
+        { "label": "Volume", "value": "47 XRP" }
+      ],
+      "cta": "Place a Bet",
+      "github": "https://github.com/XAVI-XRPL/xavi-predict",
+      "contractAddress": "0xb7527F782000c80EB0c142d87A07543f0CA24515"
+    },
+    {
+      "id": "tipjar",
+      "name": "Tip Jar",
+      "category": "DeFi",
+      "description": "Send tips in XRP or RLUSD. On-chain leaderboard tracks top tippers and recipients. 1% platform fee.",
+      "accent": "#E91E63",
+      "accentRgb": "233, 30, 99",
+      "icon": "heart-handshake",
+      "badge": { "type": "live", "text": "LIVE" },
+      "stats": [
+        { "label": "Tips Sent", "value": "12" },
+        { "label": "Leaderboard", "value": "Live" }
+      ],
+      "cta": "Send Tip",
+      "github": "https://github.com/XAVI-XRPL/xavi-tipjar"
+    },
+    {
+      "id": "rwa-launchpad",
+      "name": "RWA Launchpad",
+      "category": "DeFi",
+      "description": "Tokenize real-world assets on XRPL EVM. Compliant issuance with built-in transfer restrictions.",
+      "accent": "#5C6BC0",
+      "accentRgb": "92, 107, 192",
+      "icon": "file-badge",
+      "badge": { "type": "live", "text": "LIVE" },
+      "stats": [
+        { "label": "Assets Tokenized", "value": "2" },
+        { "label": "Compliance", "value": "Built-in ✓" }
+      ],
+      "cta": "Tokenize Asset",
+      "github": "https://github.com/XAVI-XRPL/xavi-rwa-launchpad"
+    },
+    {
+      "id": "marketplace",
+      "name": "Agent Marketplace",
+      "category": "Services",
+      "description": "Hire AI agents for development, research, audits, and content. Escrow payments with on-chain reputation.",
+      "accent": "#E67E22",
+      "accentRgb": "230, 126, 34",
+      "icon": "store",
+      "badge": { "type": "live", "text": "LIVE" },
+      "stats": [
+        { "label": "Active Services", "value": "6" },
+        { "label": "Orders", "value": "3" }
+      ],
+      "cta": "Browse Services",
+      "github": "https://github.com/XAVI-XRPL/xavi-marketplace"
+    },
+    {
+      "id": "sentinel",
+      "name": "Agent Sentinel",
+      "category": "Services",
+      "description": "AI-powered smart contract auditor. Scans for vulnerabilities, publishes reports on-chain.",
+      "accent": "#E74C3C",
+      "accentRgb": "231, 76, 60",
+      "icon": "scan-eye",
+      "badge": { "type": "live", "text": "LIVE" },
+      "stats": [
+        { "label": "Contracts Audited", "value": "22+" },
+        { "label": "Reports", "value": "On-Chain ✓" }
+      ],
+      "cta": "Run Audit",
+      "github": "https://github.com/XAVI-XRPL/agent-sentinel"
+    },
+    {
+      "id": "bountyboard",
+      "name": "Bounty Board",
+      "category": "Services",
+      "description": "Post development bounties in XRP or RLUSD. Dutch auction pricing. Escrow holds payment until delivery.",
+      "accent": "#F39C12",
+      "accentRgb": "243, 156, 18",
+      "icon": "clipboard-check",
+      "badge": { "type": "live", "text": "LIVE" },
+      "stats": [
+        { "label": "Open Bounties", "value": "4" },
+        { "label": "Escrow", "value": "Automated ✓" }
+      ],
+      "cta": "Post Bounty",
+      "github": "https://github.com/XAVI-XRPL/xavi-bountyboard"
+    },
+    {
+      "id": "xavirelay",
+      "name": "XaviRelay",
+      "category": "Cross-Chain",
+      "description": "Cross-chain payments and messaging via Axelar GMP. Route transactions between XRPL EVM and Base.",
+      "accent": "#1ABC9C",
+      "accentRgb": "26, 188, 156",
+      "icon": "radio-tower",
+      "badge": { "type": "live", "text": "LIVE" },
+      "stats": [
+        { "label": "Chains", "value": "XRPL EVM ↔ Base" },
+        { "label": "Protocol", "value": "Axelar GMP" }
+      ],
+      "cta": "Send Cross-Chain",
+      "github": "https://github.com/XAVI-XRPL/xavi-relay"
+    }
+  ]
+}

@@ -338,6 +338,226 @@
         .dapp-card-actions {
             display: flex;
             gap: var(--space-sm);
+            align-items: center;
+        }
+        
+        /* New dApps Page Styles */
+        .ecosystem-stats {
+            color: var(--xavi-muted);
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-tab {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-tab:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .filter-tab.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--xavi-purple-mid);
+            color: #FFFFFF;
+        }
+        
+        .dapp-category {
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .category-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 16px;
+            padding-left: 4px;
+        }
+        
+        .dapp-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dapp-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .stats-row .stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stats-row .stat-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+        
+        .cta-button {
+            color: #000;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.03);
+            filter: brightness(1.1);
+        }
+        
+        .github-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .github-btn:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+        
+        .github-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .seeding-note {
+            color: var(--xavi-dim);
+            font-size: 12px;
+            display: block;
+            margin-top: -8px;
+            margin-bottom: var(--space-md);
+        }
+        
+        /* Badge styles */
+        .badge-featured {
+            background: linear-gradient(135deg, #F5A623, #ff8c00);
+            color: #000;
+            font-weight: 600;
+        }
+        
+        .badge-live {
+            background: rgba(39, 174, 96, 0.2);
+            color: #27AE60;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .badge-deployed {
+            background: rgba(241, 196, 15, 0.2);
+            color: #F1C40F;
+        }
+        
+        .badge-custom {
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #27AE60;
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .pulse-dot::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: #27AE60;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(2.5); opacity: 0; }
+        }
+        
+        /* Card hover with accent color */
+        .dapp-card:hover {
+            border-color: var(--accent-color, var(--xavi-border));
+            box-shadow: 0 8px 32px rgba(var(--accent-rgb, 255, 255, 255), 0.15),
+                        0 0 0 1px rgba(var(--accent-rgb, 255, 255, 255), 0.3);
+        }
+        
+        /* Filter functionality */
+        .dapp-card.filtered-out {
+            opacity: 0.15;
+            pointer-events: none;
+            transform: scale(0.97);
+        }
+        
+        @media (max-width: 640px) {
+            .stats-row {
+                flex-direction: column;
+            }
+            .cta-button {
+                flex: 1;
+            }
+            .filter-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                padding-bottom: 8px;
+            }
         }
         
         /* Roadmap */
@@ -702,7 +922,7 @@
         <div class="container">
             <div class="stats-bar scroll-reveal" id="statsBar">
                 <div class="stat-item">
-                    <div class="stat-value" data-count="20">0</div>
+                    <div class="stat-value" data-count="22">0</div>
                     <div class="stat-label">Contracts Deployed</div>
                     <div class="stat-bar"></div>
                 </div>
@@ -712,8 +932,8 @@
                     <div class="stat-bar"></div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value" data-count="1">0</div>
-                    <div class="stat-label">Chain Live</div>
+                    <div class="stat-value" data-count="2">0</div>
+                    <div class="stat-label">Chains Live</div>
                     <div class="stat-bar"></div>
                 </div>
                 <div class="stat-item">
@@ -730,227 +950,282 @@
         <div class="container">
             <div class="section-header scroll-reveal">
                 <div class="section-title">
-                    <h2 class="section-title-animated">Launch dApps</h2>
+                    <h2 class="section-title-animated">XAVI ECOSYSTEM</h2>
                     <div class="section-line"></div>
                 </div>
-                <p class="text-muted mt-sm">Premium DeFi infrastructure built for XRPL EVM</p>
+                <p class="ecosystem-stats mt-sm">12 dApps · 22 Verified Contracts · 2 Chains Live · 100% Open Source</p>
+                
+                <!-- Filter Tabs -->
+                <div class="filter-tabs mt-lg">
+                    <button class="filter-tab active" data-category="all">All</button>
+                    <button class="filter-tab" data-category="infrastructure">Infrastructure</button>
+                    <button class="filter-tab" data-category="defi">DeFi</button>
+                    <button class="filter-tab" data-category="services">Services</button>
+                    <button class="filter-tab" data-category="cross-chain">Cross-Chain</button>
+                </div>
             </div>
             
-            <div class="dapp-grid scroll-reveal-stagger" id="dappGrid">
-                <!-- ⭐ TOP 3: ERC-8004 Identity -->
-                <div class="xavi-card xavi-card-glow dapp-card" style="border: 2px solid var(--xavi-gold);">
-                    <div class="dapp-card-header">
-                        <div class="icon-box" style="background: linear-gradient(135deg, var(--xavi-gold), #ff8c00);">
-                            <i data-lucide="fingerprint"></i>
+            <!-- INFRASTRUCTURE -->
+            <div class="dapp-category" data-category="infrastructure">
+                <h3 class="category-label">Infrastructure</h3>
+                <div class="dapp-grid scroll-reveal-stagger">
+                    <!-- ERC-8004 Identity -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #F5A623; --accent-rgb: 245, 166, 35;" data-category="infrastructure">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(245, 166, 35, 0.12);">
+                                <i data-lucide="shield-check" style="color: #F5A623;"></i>
+                            </div>
+                            <span class="badge badge-featured">⭐ FEATURED</span>
                         </div>
-                        <span class="badge badge-featured">⭐ Featured</span>
+                        <h3 class="dapp-card-title">ERC-8004 Identity</h3>
+                        <p class="dapp-card-desc">First ERC-8004 implementation on a non-Ethereum chain. On-chain identity registry for AI agents and humans.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Identities</span><span class="stat-value" style="color: #F5A623;">23</span></div>
+                            <div class="stat-item"><span class="stat-label">Status</span><span class="stat-value">First on XRPL ✓</span></div>
+                        </div>
+                        <div class="dapp-card-actions">
+                            <a href="xavi-identity/" class="cta-button" style="background: #F5A623;">Register Identity</a>
+                            <a href="https://github.com/XAVI-XRPL/xavi-identity" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
+                        </div>
                     </div>
-                    <h3 class="dapp-card-title">ERC-8004 Identity</h3>
-                    <p class="dapp-card-desc">On-chain agent identity registry. First implementation on XRPL EVM. Register, verify, and manage AI agent identities.</p>
-                    <div class="dapp-card-actions">
-                        <a href="xavi-identity/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/xavi-identity" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
+                    
+                    <!-- XaviLaunchpad -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #27AE60; --accent-rgb: 39, 174, 96;" data-category="infrastructure">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(39, 174, 96, 0.12);">
+                                <i data-lucide="rocket" style="color: #27AE60;"></i>
+                            </div>
+                            <span class="badge badge-featured">⭐ FEATURED</span>
+                        </div>
+                        <h3 class="dapp-card-title">XaviLaunchpad</h3>
+                        <p class="dapp-card-desc">Deploy an AI agent in one transaction. Wallet, identity, and security audit — all at once.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Agents Launched</span><span class="stat-value" style="color: #27AE60;">6</span></div>
+                            <div class="stat-item"><span class="stat-label">Includes</span><span class="stat-value">Wallet + ID + Audit</span></div>
+                        </div>
+                        <div class="dapp-card-actions">
+                            <a href="xavi-launchpad/" class="cta-button" style="background: #27AE60;">Deploy Agent</a>
+                            <a href="https://github.com/XAVI-XRPL/xavi-launchpad" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
+                        </div>
+                    </div>
+                    
+                    <!-- XaviWallet -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #00BCD4; --accent-rgb: 0, 188, 212;" data-category="infrastructure">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(0, 188, 212, 0.12);">
+                                <i data-lucide="wallet" style="color: #00BCD4;"></i>
+                            </div>
+                            <span class="badge badge-live"><span class="pulse-dot"></span> LIVE</span>
+                        </div>
+                        <h3 class="dapp-card-title">XaviWallet</h3>
+                        <p class="dapp-card-desc">Smart contract wallet with guardian controls, session keys, and daily spending limits. Built for agents and humans.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Active Wallets</span><span class="stat-value" style="color: #00BCD4;">3</span></div>
+                            <div class="stat-item"><span class="stat-label">Model</span><span class="stat-value">Guardian + Operator</span></div>
+                        </div>
+                        <div class="dapp-card-actions">
+                            <a href="xavi-wallet/" class="cta-button" style="background: #00BCD4;">Create Wallet</a>
+                            <a href="https://github.com/XAVI-XRPL/xavi-wallet" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- ⭐ TOP 3: XaviLaunchpad -->
-                <div class="xavi-card xavi-card-glow dapp-card" style="border: 2px solid var(--xavi-gold);">
-                    <div class="dapp-card-header">
-                        <div class="icon-box" style="background: linear-gradient(135deg, var(--xavi-gold), #ff8c00);">
-                            <i data-lucide="rocket"></i>
+            </div>
+            
+            <!-- DeFi -->
+            <div class="dapp-category" data-category="defi">
+                <h3 class="category-label">DeFi</h3>
+                <div class="dapp-grid scroll-reveal-stagger">
+                    <!-- XaviSwap DEX -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #3498DB; --accent-rgb: 52, 152, 219;" data-category="defi">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(52, 152, 219, 0.12);">
+                                <i data-lucide="arrow-left-right" style="color: #3498DB;"></i>
+                            </div>
+                            <span class="badge badge-deployed">DEPLOYED</span>
                         </div>
-                        <span class="badge badge-featured">⭐ Featured</span>
+                        <h3 class="dapp-card-title">XaviSwap DEX</h3>
+                        <p class="dapp-card-desc">Uniswap V2-style AMM on XRPL EVM. 0.05% swap fee. XRP/RLUSD pair ready for liquidity.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Pairs</span><span class="stat-value">XRP/RLUSD</span></div>
+                            <div class="stat-item"><span class="stat-label">TVL</span><span class="stat-value">—</span></div>
+                        </div>
+                        <small class="seeding-note">Liquidity seeding in progress</small>
+                        <div class="dapp-card-actions">
+                            <a href="xaviswap/" class="cta-button" style="background: #3498DB;">Swap Tokens</a>
+                            <a href="https://github.com/XAVI-XRPL/xaviswap" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
+                        </div>
                     </div>
-                    <h3 class="dapp-card-title">XaviLaunchpad</h3>
-                    <p class="dapp-card-desc">One-click AI agent deployment. Get a wallet, identity, and security audit in seconds. Launch your agent on XRPL EVM.</p>
-                    <div class="dapp-card-actions">
-                        <a href="xavi-launchpad/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/xavi-launchpad" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
+                    
+                    <!-- Predictions -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #9B59B6; --accent-rgb: 155, 89, 182;" data-category="defi">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(155, 89, 182, 0.12);">
+                                <i data-lucide="bar-chart-3" style="color: #9B59B6;"></i>
+                            </div>
+                            <span class="badge badge-custom" style="background: #9B59B6;">10 MARKETS</span>
+                        </div>
+                        <h3 class="dapp-card-title">Prediction Markets</h3>
+                        <p class="dapp-card-desc">Bet on XRPL, AI, and crypto outcomes. Constant-product AMM pricing. 10 curated markets live now.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Active Markets</span><span class="stat-value" style="color: #9B59B6;">10</span></div>
+                            <div class="stat-item"><span class="stat-label">Volume</span><span class="stat-value">47 XRP</span></div>
+                        </div>
+                        <div class="dapp-card-actions">
+                            <a href="xavi-predict/" class="cta-button" style="background: #9B59B6;">Place a Bet</a>
+                            <a href="https://github.com/XAVI-XRPL/xavi-predict" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
+                        </div>
+                    </div>
+                    
+                    <!-- Tip Jar -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #E91E63; --accent-rgb: 233, 30, 99;" data-category="defi">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(233, 30, 99, 0.12);">
+                                <i data-lucide="heart-handshake" style="color: #E91E63;"></i>
+                            </div>
+                            <span class="badge badge-live"><span class="pulse-dot"></span> LIVE</span>
+                        </div>
+                        <h3 class="dapp-card-title">Tip Jar</h3>
+                        <p class="dapp-card-desc">Send tips in XRP or RLUSD. On-chain leaderboard tracks top tippers and recipients. 1% platform fee.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Tips Sent</span><span class="stat-value" style="color: #E91E63;">12</span></div>
+                            <div class="stat-item"><span class="stat-label">Leaderboard</span><span class="stat-value">Live</span></div>
+                        </div>
+                        <div class="dapp-card-actions">
+                            <a href="xavi-tipjar/" class="cta-button" style="background: #E91E63;">Send Tip</a>
+                            <a href="https://github.com/XAVI-XRPL/xavi-tipjar" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
+                        </div>
+                    </div>
+                    
+                    <!-- RWA Launchpad -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #5C6BC0; --accent-rgb: 92, 107, 192;" data-category="defi">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(92, 107, 192, 0.12);">
+                                <i data-lucide="file-badge" style="color: #5C6BC0;"></i>
+                            </div>
+                            <span class="badge badge-live"><span class="pulse-dot"></span> LIVE</span>
+                        </div>
+                        <h3 class="dapp-card-title">RWA Launchpad</h3>
+                        <p class="dapp-card-desc">Tokenize real-world assets on XRPL EVM. Compliant issuance with built-in transfer restrictions.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Assets Tokenized</span><span class="stat-value" style="color: #5C6BC0;">2</span></div>
+                            <div class="stat-item"><span class="stat-label">Compliance</span><span class="stat-value">Built-in ✓</span></div>
+                        </div>
+                        <div class="dapp-card-actions">
+                            <a href="xavi-rwa-launchpad/" class="cta-button" style="background: #5C6BC0;">Tokenize Asset</a>
+                            <a href="https://github.com/XAVI-XRPL/xavi-rwa" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- ⭐ TOP 3: Prediction Markets -->
-                <div class="xavi-card xavi-card-glow dapp-card" style="border: 2px solid var(--xavi-gold);">
-                    <div class="dapp-card-header">
-                        <div class="icon-box" style="background: linear-gradient(135deg, var(--xavi-gold), #ff8c00);">
-                            <i data-lucide="trending-up"></i>
+            </div>
+            
+            <!-- SERVICES -->
+            <div class="dapp-category" data-category="services">
+                <h3 class="category-label">Services</h3>
+                <div class="dapp-grid scroll-reveal-stagger">
+                    <!-- Agent Marketplace -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #E67E22; --accent-rgb: 230, 126, 34;" data-category="services">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(230, 126, 34, 0.12);">
+                                <i data-lucide="store" style="color: #E67E22;"></i>
+                            </div>
+                            <span class="badge badge-live"><span class="pulse-dot"></span> LIVE</span>
                         </div>
-                        <span class="badge badge-featured">⭐ 10 Live Markets</span>
+                        <h3 class="dapp-card-title">Agent Marketplace</h3>
+                        <p class="dapp-card-desc">Hire AI agents for development, research, audits, and content. Escrow payments with on-chain reputation.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Active Services</span><span class="stat-value" style="color: #E67E22;">6</span></div>
+                            <div class="stat-item"><span class="stat-label">Orders</span><span class="stat-value">3</span></div>
+                        </div>
+                        <div class="dapp-card-actions">
+                            <a href="xavi-marketplace/" class="cta-button" style="background: #E67E22;">Browse Services</a>
+                            <a href="https://github.com/XAVI-XRPL/xavi-marketplace" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
+                        </div>
                     </div>
-                    <h3 class="dapp-card-title">Predictions</h3>
-                    <p class="dapp-card-desc">Bet on XRPL, AI, and crypto outcomes. 10 curated markets live now. Constant-product AMM pricing.</p>
-                    <div class="dapp-card-actions">
-                        <a href="xavi-predict/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/xavi-predict" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
+                    
+                    <!-- Agent Sentinel -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #E74C3C; --accent-rgb: 231, 76, 60;" data-category="services">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(231, 76, 60, 0.12);">
+                                <i data-lucide="scan-eye" style="color: #E74C3C;"></i>
+                            </div>
+                            <span class="badge badge-live"><span class="pulse-dot"></span> LIVE</span>
+                        </div>
+                        <h3 class="dapp-card-title">Agent Sentinel</h3>
+                        <p class="dapp-card-desc">AI-powered smart contract auditor. Scans for vulnerabilities, publishes reports on-chain.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Contracts Audited</span><span class="stat-value" style="color: #E74C3C;">22+</span></div>
+                            <div class="stat-item"><span class="stat-label">Reports</span><span class="stat-value">On-Chain ✓</span></div>
+                        </div>
+                        <div class="dapp-card-actions">
+                            <a href="agent-sentinel/" class="cta-button" style="background: #E74C3C;">Run Audit</a>
+                            <a href="https://github.com/XAVI-XRPL/agent-sentinel" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
+                        </div>
+                    </div>
+                    
+                    <!-- Bounty Board -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #F39C12; --accent-rgb: 243, 156, 18;" data-category="services">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(243, 156, 18, 0.12);">
+                                <i data-lucide="clipboard-check" style="color: #F39C12;"></i>
+                            </div>
+                            <span class="badge badge-live"><span class="pulse-dot"></span> LIVE</span>
+                        </div>
+                        <h3 class="dapp-card-title">Bounty Board</h3>
+                        <p class="dapp-card-desc">Post development bounties in XRP or RLUSD. Dutch auction pricing. Escrow holds payment until delivery.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Open Bounties</span><span class="stat-value" style="color: #F39C12;">4</span></div>
+                            <div class="stat-item"><span class="stat-label">Escrow</span><span class="stat-value">Automated ✓</span></div>
+                        </div>
+                        <div class="dapp-card-actions">
+                            <a href="xavi-bountyboard/" class="cta-button" style="background: #F39C12;">Post Bounty</a>
+                            <a href="https://github.com/XAVI-XRPL/xavi-bountyboard" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- XaviWallet -->
-                <div class="xavi-card xavi-card-glow dapp-card">
-                    <div class="dapp-card-header">
-                        <div class="icon-box">
-                            <i data-lucide="lock-keyhole"></i>
+            </div>
+            
+            <!-- CROSS-CHAIN -->
+            <div class="dapp-category" data-category="cross-chain">
+                <h3 class="category-label">Cross-Chain</h3>
+                <div class="dapp-grid scroll-reveal-stagger">
+                    <!-- XaviRelay -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #1ABC9C; --accent-rgb: 26, 188, 156;" data-category="cross-chain">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(26, 188, 156, 0.12);">
+                                <i data-lucide="radio-tower" style="color: #1ABC9C;"></i>
+                            </div>
+                            <span class="badge badge-live"><span class="pulse-dot"></span> LIVE</span>
                         </div>
-                        <span class="badge badge-live">Live</span>
-                    </div>
-                    <h3 class="dapp-card-title">XaviWallet</h3>
-                    <p class="dapp-card-desc">Smart wallet with session keys and spending limits.</p>
-                    <div class="dapp-card-actions">
-                        <a href="xavi-wallet/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/xavi-wallet" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- XaviSwap -->
-                <div class="xavi-card xavi-card-glow dapp-card">
-                    <div class="dapp-card-header">
-                        <div class="icon-box">
-                            <i data-lucide="repeat"></i>
+                        <h3 class="dapp-card-title">XaviRelay</h3>
+                        <p class="dapp-card-desc">Cross-chain payments and messaging via Axelar GMP. Route transactions between XRPL EVM and Base.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Chains</span><span class="stat-value">XRPL EVM ↔ Base</span></div>
+                            <div class="stat-item"><span class="stat-label">Protocol</span><span class="stat-value">Axelar GMP</span></div>
                         </div>
-                        <span class="badge badge-live">Deployed</span>
-                    </div>
-                    <h3 class="dapp-card-title">XaviSwap DEX</h3>
-                    <p class="dapp-card-desc">Uniswap V2-style AMM with 0.05% protocol fee. XRP/RLUSD pair ready.</p>
-                    <small style="color: var(--xavi-dim); font-size: 12px; display: block; margin-top: -8px; margin-bottom: var(--space-md);">Liquidity seeding in progress</small>
-                    <div class="dapp-card-actions">
-                        <a href="xaviswap/" class="btn btn-primary btn-sm">Launch App</a>
-                        <a href="https://github.com/XAVI-XRPL/xaviswap" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Agent Marketplace -->
-                <div class="xavi-card xavi-card-glow dapp-card">
-                    <div class="dapp-card-header">
-                        <div class="icon-box">
-                            <i data-lucide="store"></i>
+                        <div class="dapp-card-actions">
+                            <a href="xavi-relay/" class="cta-button" style="background: #1ABC9C;">Send Cross-Chain</a>
+                            <a href="https://github.com/XAVI-XRPL/xavi-relay" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
                         </div>
-                        <span class="badge badge-live">Live</span>
                     </div>
-                    <h3 class="dapp-card-title">Agent Marketplace</h3>
-                    <p class="dapp-card-desc">Hire AI agents for tasks. Escrow payments with reputation tracking.</p>
-                    <div class="dapp-card-actions">
-                        <a href="xavi-marketplace/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/xavi-marketplace" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Agent Sentinel -->
-                <div class="xavi-card xavi-card-glow dapp-card">
-                    <div class="dapp-card-header">
-                        <div class="icon-box">
-                            <i data-lucide="shield-check"></i>
+                    
+                    <!-- CrossLedger -->
+                    <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #8BC34A; --accent-rgb: 139, 195, 74;" data-category="cross-chain">
+                        <div class="dapp-card-header">
+                            <div class="dapp-icon" style="background: rgba(139, 195, 74, 0.12);">
+                                <i data-lucide="link-2" style="color: #8BC34A;"></i>
+                            </div>
+                            <span class="badge badge-live"><span class="pulse-dot"></span> LIVE</span>
                         </div>
-                        <span class="badge badge-live">Live</span>
-                    </div>
-                    <h3 class="dapp-card-title">Agent Sentinel</h3>
-                    <p class="dapp-card-desc">AI-powered smart contract auditing. On-chain reports.</p>
-                    <div class="dapp-card-actions">
-                        <a href="agent-sentinel/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/agent-sentinel" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Bounty Board -->
-                <div class="xavi-card xavi-card-glow dapp-card">
-                    <div class="dapp-card-header">
-                        <div class="icon-box">
-                            <i data-lucide="target"></i>
+                        <h3 class="dapp-card-title">CrossLedger</h3>
+                        <p class="dapp-card-desc">Bridge identities between XRPL native ledger and XRPL EVM. Unified identity across both layers.</p>
+                        <div class="stats-row">
+                            <div class="stat-item"><span class="stat-label">Bridges</span><span class="stat-value">XRPL ↔ EVM</span></div>
+                            <div class="stat-item"><span class="stat-label">Status</span><span class="stat-value">Identity Sync Active</span></div>
                         </div>
-                        <span class="badge badge-live">Live</span>
-                    </div>
-                    <h3 class="dapp-card-title">Bounty Board</h3>
-                    <p class="dapp-card-desc">Post bounties with XRP or RLUSD. Dutch auction pricing.</p>
-                    <div class="dapp-card-actions">
-                        <a href="xavi-bountyboard/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/xavi-bountyboard" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Tip Jar -->
-                <div class="xavi-card xavi-card-glow dapp-card">
-                    <div class="dapp-card-header">
-                        <div class="icon-box">
-                            <i data-lucide="coins"></i>
+                        <div class="dapp-card-actions">
+                            <a href="xavi-crossledger/" class="cta-button" style="background: #8BC34A;">Bridge Identity</a>
+                            <a href="https://github.com/XAVI-XRPL/xavi-crossledger" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
                         </div>
-                        <span class="badge badge-live">Live</span>
-                    </div>
-                    <h3 class="dapp-card-title">Tip Jar</h3>
-                    <p class="dapp-card-desc">Send tips in XRP or RLUSD. On-chain leaderboard.</p>
-                    <div class="dapp-card-actions">
-                        <a href="xavi-tipjar/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/xavi-tipjar" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- XaviRelay -->
-                <div class="xavi-card xavi-card-glow dapp-card">
-                    <div class="dapp-card-header">
-                        <div class="icon-box">
-                            <i data-lucide="arrow-left-right"></i>
-                        </div>
-                        <span class="badge badge-live">Live</span>
-                    </div>
-                    <h3 class="dapp-card-title">XaviRelay</h3>
-                    <p class="dapp-card-desc">Cross-chain payments via Axelar. XRPL EVM ↔ Base.</p>
-                    <div class="dapp-card-actions">
-                        <a href="xavi-relay/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/xavi-relay" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- RWA Launchpad -->
-                <div class="xavi-card xavi-card-glow dapp-card">
-                    <div class="dapp-card-header">
-                        <div class="icon-box">
-                            <i data-lucide="landmark"></i>
-                        </div>
-                        <span class="badge badge-live">Live</span>
-                    </div>
-                    <h3 class="dapp-card-title">RWA Launchpad</h3>
-                    <p class="dapp-card-desc">Tokenize real-world assets. Compliant issuance.</p>
-                    <div class="dapp-card-actions">
-                        <a href="xavi-rwa-launchpad/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/xavi-rwa" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- CrossLedger -->
-                <div class="xavi-card xavi-card-glow dapp-card">
-                    <div class="dapp-card-header">
-                        <div class="icon-box">
-                            <i data-lucide="link"></i>
-                        </div>
-                        <span class="badge badge-live">Live</span>
-                    </div>
-                    <h3 class="dapp-card-title">CrossLedger</h3>
-                    <p class="dapp-card-desc">Bridge identities between XRPL native and EVM.</p>
-                    <div class="dapp-card-actions">
-                        <a href="xavi-crossledger/" class="btn btn-primary btn-sm">Launch</a>
-                        <a href="https://github.com/XAVI-XRPL/xavi-crossledger" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="github"></i>
-                        </a>
                     </div>
                 </div>
             </div>
@@ -1258,6 +1533,43 @@
                 if (navLink && scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
                     document.querySelectorAll('.navbar-link').forEach(link => link.classList.remove('active'));
                     navLink.classList.add('active');
+                }
+            });
+        });
+        
+        // ============================================
+        // dAPPS FILTER TABS
+        // ============================================
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        const dappCards = document.querySelectorAll('.dapp-card');
+        const dappCategories = document.querySelectorAll('.dapp-category');
+        
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active tab
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const category = tab.dataset.category;
+                
+                if (category === 'all') {
+                    // Show all
+                    dappCards.forEach(card => card.classList.remove('filtered-out'));
+                    dappCategories.forEach(cat => cat.style.display = 'block');
+                } else {
+                    // Filter by category
+                    dappCategories.forEach(cat => {
+                        if (cat.dataset.category === category) {
+                            cat.style.display = 'block';
+                            cat.querySelectorAll('.dapp-card').forEach(card => {
+                                card.classList.remove('filtered-out');
+                            });
+                        } else {
+                            cat.querySelectorAll('.dapp-card').forEach(card => {
+                                card.classList.add('filtered-out');
+                            });
+                        }
+                    });
                 }
             });
         });
