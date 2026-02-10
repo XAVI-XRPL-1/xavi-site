@@ -971,10 +971,8 @@
                 </div>
             </div>
             
-            <!-- INFRASTRUCTURE -->
-            <div class="dapp-category" data-category="infrastructure">
-                <h3 class="category-label">Infrastructure</h3>
-                <div class="dapp-grid scroll-reveal-stagger">
+            <!-- ALL DAPPS - Single Grid -->
+            <div class="dapp-grid scroll-reveal-stagger">
                     <!-- ERC-8004 Identity -->
                     <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #F5A623; --accent-rgb: 245, 166, 35;" data-category="infrastructure">
                         <div class="dapp-card-header">
@@ -1034,13 +1032,6 @@
                             <a href="https://github.com/XAVI-XRPL/xavi-wallet" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- DeFi -->
-            <div class="dapp-category" data-category="defi">
-                <h3 class="category-label">DeFi</h3>
-                <div class="dapp-grid scroll-reveal-stagger">
                     <!-- XaviSwap DEX -->
                     <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #3498DB; --accent-rgb: 52, 152, 219;" data-category="defi">
                         <div class="dapp-card-header">
@@ -1121,13 +1112,7 @@
                             <a href="https://github.com/XAVI-XRPL/xavi-rwa" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- SERVICES -->
-            <div class="dapp-category" data-category="services">
-                <h3 class="category-label">Services</h3>
-                <div class="dapp-grid scroll-reveal-stagger">
+                    
                     <!-- Agent Marketplace -->
                     <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #E67E22; --accent-rgb: 230, 126, 34;" data-category="services">
                         <div class="dapp-card-header">
@@ -1187,13 +1172,7 @@
                             <a href="https://github.com/XAVI-XRPL/xavi-bountyboard" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- CROSS-CHAIN -->
-            <div class="dapp-category" data-category="cross-chain">
-                <h3 class="category-label">Cross-Chain</h3>
-                <div class="dapp-grid scroll-reveal-stagger">
+                    
                     <!-- XaviRelay -->
                     <div class="xavi-card xavi-card-glow dapp-card" style="--accent-color: #1ABC9C; --accent-rgb: 26, 188, 156;" data-category="cross-chain">
                         <div class="dapp-card-header">
@@ -1233,7 +1212,6 @@
                             <a href="https://github.com/XAVI-XRPL/xavi-crossledger" target="_blank" class="github-btn"><i data-lucide="github"></i></a>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </section>
@@ -1548,7 +1526,6 @@
         // ============================================
         const filterTabs = document.querySelectorAll('.filter-tab');
         const dappCards = document.querySelectorAll('.dapp-card');
-        const dappCategories = document.querySelectorAll('.dapp-category');
         
         filterTabs.forEach(tab => {
             tab.addEventListener('click', () => {
@@ -1559,21 +1536,20 @@
                 const category = tab.dataset.category;
                 
                 if (category === 'all') {
-                    // Show all
-                    dappCards.forEach(card => card.classList.remove('filtered-out'));
-                    dappCategories.forEach(cat => cat.style.display = 'block');
+                    // Show all cards
+                    dappCards.forEach(card => {
+                        card.classList.remove('filtered-out');
+                        card.style.display = '';
+                    });
                 } else {
                     // Filter by category
-                    dappCategories.forEach(cat => {
-                        if (cat.dataset.category === category) {
-                            cat.style.display = 'block';
-                            cat.querySelectorAll('.dapp-card').forEach(card => {
-                                card.classList.remove('filtered-out');
-                            });
+                    dappCards.forEach(card => {
+                        if (card.dataset.category === category) {
+                            card.classList.remove('filtered-out');
+                            card.style.display = '';
                         } else {
-                            cat.querySelectorAll('.dapp-card').forEach(card => {
-                                card.classList.add('filtered-out');
-                            });
+                            card.classList.add('filtered-out');
+                            card.style.display = 'none';
                         }
                     });
                 }
